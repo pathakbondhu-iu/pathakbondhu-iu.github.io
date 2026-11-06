@@ -117,7 +117,9 @@ section.block{padding:46px 0 10px}
 .pagehead h1{margin:0;font-size:2.2rem}.pagehead p{margin:6px 0 0;opacity:.9}
 .about-text{max-width:760px;margin:0 auto;text-align:center;font-size:1.08rem}.about-text p{margin:0 0 12px}
 .more-link{display:block;text-align:center;margin-top:10px;color:var(--green);font-weight:600;text-decoration:none}
-.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:26px}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px}
+@media(max-width:820px){.pillars{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.pillars{gap:10px}.pillar{padding:14px 10px}.pillar h3{font-size:1.1rem}.pillar p{font-size:.86rem}}
 .pillar{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--gold);border-radius:16px;padding:20px 18px;text-align:center;box-shadow:var(--shadow)}
 .pillar .ic{font-size:2rem}.pillar h3{margin:6px 0 4px;font-size:1.3rem;color:var(--green)}.pillar p{margin:0;color:var(--muted);font-size:.95rem}
 .carousel{position:relative}
@@ -173,7 +175,10 @@ footer .flogos img{height:46px;width:auto;background:#fff;border-radius:10px;pad
 .mem.big{padding:26px 16px 22px;border-top:5px solid var(--gold)}
 .mem.big .mphoto,.mem.big .avatar{width:170px;height:170px;border-width:5px;font-size:4rem;box-shadow:0 10px 26px rgba(8,58,44,.2)}
 .mem.big h3{font-size:1.5rem}.mem.big .role{font-size:1rem;padding:1px 18px}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.mgrid{display:flex;flex-wrap:wrap;justify-content:center;gap:14px}
+.mgrid .mem{flex:0 0 calc(25% - 10.5px)}
+@media(max-width:820px){.mgrid .mem{flex-basis:calc(33.333% - 9.4px)}}
+@media(max-width:560px){.mgrid .mem{flex-basis:calc(50% - 7px);padding:14px 8px}.mgrid .mem .mphoto,.mgrid .mem .avatar{width:80px;height:80px}}
 .sub-head{text-align:center;margin:36px 0 16px;font-size:1.5rem;color:var(--deep)}
 @media(max-width:560px){.hero h1{font-size:2.3rem}.hero .logo{height:92px}.brand span{display:none}.post h1{font-size:1.6rem}.clockbar{font-size:.74rem}}
 """
