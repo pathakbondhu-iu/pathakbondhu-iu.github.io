@@ -84,7 +84,7 @@ def load_json(rel, default):
 CSS = r"""
 :root{--deep:#083a2c;--green:#0f5c45;--mid:#1d7a5c;--soft:#e6f0ea;--gold:#c99a2e;--gold-l:#f1d98e;--paper:#faf7f0;--card:#fff;--ink:#1b2a24;--muted:#63726b;--line:#e4e0d4;--shadow:0 8px 28px rgba(8,58,44,.10)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:70px}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
 body{margin:0;font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.8}
 h1,h2,h3,.serif{font-family:"Tiro Bangla","Hind Siliguri",serif;font-weight:400}
 a{color:inherit}img{max-width:100%}
@@ -94,7 +94,10 @@ section.block{padding:46px 0 10px}
 .sec-head .bar{width:64px;height:4px;border-radius:4px;margin:8px auto 0;background:linear-gradient(90deg,var(--gold),var(--gold-l))}
 .sec-head p{margin:10px 0 0;color:var(--muted)}
 .topbar{position:sticky;top:0;z-index:20;background:rgba(8,58,44,.96);backdrop-filter:blur(6px);border-bottom:3px solid var(--gold)}
-.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:58px}
+.topbar .wrap.main-row{display:flex;align-items:center;justify-content:space-between;gap:12px;height:58px}
+.clockbar{background:#062c21;color:#cfe3da;font-size:.8rem}
+.clockbar .wrap{display:flex;justify-content:flex-end;gap:12px;padding-top:2px;padding-bottom:2px;line-height:1.5}
+.clockbar b{color:var(--gold-l);font-weight:500;font-variant-numeric:tabular-nums}
 .brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-size:1.25rem;white-space:nowrap}.brand img{height:34px;width:auto}
 .menu{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}.menu::-webkit-scrollbar{display:none}
 .menu a{color:#d8ebe2;text-decoration:none;font-size:.95rem;padding:6px 12px;border-radius:18px;white-space:nowrap}
@@ -160,8 +163,30 @@ section.block{padding:46px 0 10px}
 footer{background:var(--deep);color:#bcd8cc;text-align:center;font-size:.9rem;padding:30px 16px 36px;margin-top:46px;border-top:4px solid var(--gold)}
 footer .flogos{display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:12px;flex-wrap:wrap}
 footer .flogos img{height:46px;width:auto;background:#fff;border-radius:10px;padding:4px}footer a{color:var(--gold-l)}
-@media(max-width:560px){.hero h1{font-size:2.3rem}.hero .logo{height:92px}.brand span{display:none}.post h1{font-size:1.6rem}}
+.featured{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:760px;margin:0 auto}
+.mem{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 14px;text-align:center;box-shadow:var(--shadow)}
+.mem .mphoto,.mem .avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;object-position:center top;display:block;margin:0 auto 10px;border:3px solid var(--gold-l)}
+.avatar{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--soft),#fff3d6);color:var(--green);font-size:2.2rem;font-family:"Tiro Bangla",serif}
+.mem h3{margin:2px 0 0;font-size:1.15rem;color:var(--deep);line-height:1.5}
+.mem .role{display:inline-block;margin-top:4px;background:var(--soft);color:var(--green);font-weight:600;font-size:.84rem;padding:0 12px;border-radius:12px}
+.mem .info{margin:6px 0 0;color:var(--muted);font-size:.86rem;line-height:1.6}
+.mem.big{padding:26px 16px 22px;border-top:5px solid var(--gold)}
+.mem.big .mphoto,.mem.big .avatar{width:170px;height:170px;border-width:5px;font-size:4rem;box-shadow:0 10px 26px rgba(8,58,44,.2)}
+.mem.big h3{font-size:1.5rem}.mem.big .role{font-size:1rem;padding:1px 18px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.sub-head{text-align:center;margin:36px 0 16px;font-size:1.5rem;color:var(--deep)}
+@media(max-width:560px){.hero h1{font-size:2.3rem}.hero .logo{height:92px}.brand span{display:none}.post h1{font-size:1.6rem}.clockbar{font-size:.74rem}}
 """
+
+CLOCK_JS = """<script>
+(function(){var d=document.getElementById("clkDate"),t=document.getElementById("clkTime");if(!d||!t)return;
+var fd,ft;try{
+fd=new Intl.DateTimeFormat("bn-BD",{timeZone:"Asia/Dhaka",weekday:"long",day:"numeric",month:"long",year:"numeric"});
+ft=new Intl.DateTimeFormat("bn-BD",{timeZone:"Asia/Dhaka",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true});
+}catch(e){return;}
+function tick(){var n=new Date();d.textContent=fd.format(n);t.textContent=ft.format(n);}
+tick();setInterval(tick,1000);})();
+</script>"""
 CSS_VER = hashlib.sha1(CSS.encode("utf-8")).hexdigest()[:8]
 
 CAROUSEL_JS = """<script>
@@ -215,6 +240,12 @@ class Site:
             p["_cat"] = self.cat_by_name.get(p.get("category"), self.default_cat)
         self.posts = posts
 
+        cm = load_json("data/committee.json", {})
+        if not isinstance(cm, dict):
+            cm = {}
+        self.cm_term = cm.get("term", "")
+        self.members = [m for m in (cm.get("members") or []) if isinstance(m, dict) and m.get("name")]
+
     def cat_posts(self, cat):
         return [p for p in self.posts if p["_cat"]["slug"] == cat["slug"]]
 
@@ -226,8 +257,8 @@ class Site:
         if image:
             absu = image if image.startswith("http") else (self.url + image)
             og_img = '<meta property="og:image" content="{}">'.format(esc(absu))
-        items = [("home", "/", "হোম"), ("about", "/about/", "আমাদের কথা"), ("posts", "/posts/", "সব পোস্ট"),
-                 ("cats", "/category/", "ক্যাটাগরি"), ("contact", "/contact/", "যোগাযোগ")]
+        items = [("home", "/", "হোম"), ("about", "/about/", "আমাদের কথা"), ("committee", "/committee/", "কমিটি"),
+                 ("posts", "/posts/", "সব পোস্ট"), ("cats", "/category/", "ক্যাটাগরি"), ("contact", "/contact/", "যোগাযোগ")]
         menu = "".join('<a href="{}"{}>{}</a>'.format(h, ' class="on"' if k == active else "", t) for k, h, t in items)
         mail = "mailto:" + self.email
         return """<!DOCTYPE html>
@@ -251,7 +282,9 @@ class Site:
 <link rel="stylesheet" href="/assets/style.css?v={ver}">
 </head>
 <body>
-<div class="topbar"><div class="wrap">
+<div class="topbar">
+<div class="clockbar"><div class="wrap"><span id="clkDate"></span><b id="clkTime"></b></div></div>
+<div class="wrap main-row">
   <a class="brand serif" href="/"><img src="/images/pathakbondhu-logo.png" alt="" onerror="this.style.display='none'"><span>{name}</span></a>
   <nav class="menu">{menu}</nav>
 </div></div>
@@ -266,12 +299,12 @@ class Site:
   দৈনিক আজকের পত্রিকার সহযোগী সংগঠন<br>
   <a href="{mail}">{email}</a> &nbsp;|&nbsp; <a href="{fb}" target="_blank" rel="noopener">ফেসবুক পেইজ</a>
 </footer>
-{scripts}
+{scripts}{clock}
 </body>
 </html>
 """.format(title=esc(full_title), desc=esc(desc), canon=esc(canon), og_img=og_img, ver=CSS_VER,
            name=esc(self.name), menu=menu, body=body, full=esc(self.full_name), mail=esc(mail),
-           email=esc(self.email), fb=esc(self.fb), scripts=scripts)
+           email=esc(self.email), fb=esc(self.fb), scripts=scripts, clock=CLOCK_JS)
 
     # ------------------------------------------------------------ parts
     def card(self, p):
@@ -315,6 +348,28 @@ class Site:
             '<div class="pillar"><div class="ic">{}</div><h3>{}</h3><p>{}</p></div>'.format(
                 esc(x.get("icon", "")), esc(x.get("title", "")), esc(x.get("text", ""))) for x in self.pillars))
 
+    def avatar(self, m):
+        initial = re.sub(r"[^\w]", "", str(m.get("name", "")))[:1] or "•"
+        photo = img_url(m.get("photo"))
+        if not photo:
+            return '<div class="avatar">{}</div>'.format(esc(initial))
+        fallback = ("this.onerror=null;this.replaceWith(Object.assign(document.createElement('div'),"
+                    "{className:'avatar',textContent:'" + initial.replace("'", "").replace("\\", "") + "'}))")
+        return '<img class="mphoto" src="{}" alt="{}" loading="lazy" onerror="{}">'.format(
+            esc(photo), esc(m.get("name")), esc(fallback))
+
+    def member_card(self, m, big=False):
+        return '<div class="mem{}">{}<h3>{}</h3><div class="role">{}</div>{}</div>'.format(
+            " big" if big else "", self.avatar(m), esc(m.get("name")), esc(m.get("title")),
+            '<p class="info">{}</p>'.format(esc(m.get("info"))) if m.get("info") else "")
+
+    def featured_members(self):
+        feat = [m for m in self.members if m.get("featured")]
+        return feat or self.members[:2]
+
+    def featured_html(self):
+        return '<div class="featured">{}</div>'.format("".join(self.member_card(m, True) for m in self.featured_members()))
+
     def contact_box(self):
         return ('<div class="contact"><h3>আমাদের সাথে যোগাযোগ করুন</h3><p>যেকোনো প্রশ্ন, পরামর্শ বা সহযোগিতার জন্য লিখুন।</p>'
                 '<div class="row"><a class="btn" href="mailto:{m}">ইমেইল পাঠান</a>'
@@ -338,6 +393,37 @@ class Site:
         desc = "{}: {}। দৈনিক আজকের পত্রিকার সহযোগী সংগঠন।".format(self.full_name, self.tagline)
         urls = ["/", "/about/", "/posts/", "/category/", "/contact/"]
 
+        # হোমের কমিটি অংশ
+        committee_home = ""
+        if self.members:
+            committee_home = ('<section class="block"><div class="sec-head"><h2>আমাদের কমিটি</h2><div class="bar"></div>{}</div>{}'
+                              '<a class="more-link" href="/committee/">পুরো কমিটি দেখুন →</a></section>').format(
+                "<p>{}</p>".format(esc(self.cm_term)) if self.cm_term else "", self.featured_html())
+            urls.append("/committee/")
+
+        # কমিটির পাতা
+        feat = [m for m in self.members if m.get("featured")]
+        rest = [m for m in self.members if not m.get("featured")]
+        order, groups = [], {}
+        for m in rest:
+            g = m.get("group") or "সদস্যবৃন্দ"
+            if g not in groups:
+                groups[g] = []
+                order.append(g)
+            groups[g].append(m)
+        parts = []
+        if feat:
+            parts.append('<section class="block">{}</section>'.format(
+                '<div class="featured">{}</div>'.format("".join(self.member_card(m, True) for m in feat))))
+        for g in order:
+            parts.append('<h2 class="sub-head serif">{}</h2><div class="mgrid">{}</div>'.format(
+                esc(g), "".join(self.member_card(m) for m in groups[g])))
+        if not parts:
+            parts.append('<div class="empty">কমিটির তথ্য শীঘ্রই যোগ করা হবে।</div>')
+        body = self.head("আমাদের কমিটি", esc(self.cm_term)) + '<div class="wrap">{}</div>'.format("".join(parts))
+        write("committee/index.html", self.layout("আমাদের কমিটি", "{} — {}".format(self.full_name, self.cm_term or "কমিটি"),
+                                                  body, "committee", "/committee/"))
+
         # হোম
         about_first = "<p>{}</p>".format(esc(self.about[0])) if self.about else ""
         slides = "".join('<div class="slide">{}</div>'.format(self.card(p)) for p in self.posts[:self.recent_count])
@@ -359,6 +445,7 @@ class Site:
   <section class="block"><div class="sec-head"><h2>আমাদের কথা</h2><div class="bar"></div></div>
     <div class="about-text">{about}</div>{pillars}
     <a class="more-link" href="/about/">আরও জানুন →</a></section>
+  {committee}
   <section class="block" id="recent"><div class="sec-head"><h2>সাম্প্রতিক পোস্ট</h2><div class="bar"></div><p>আমাদের সর্বশেষ কার্যক্রম</p></div>
     <div class="carousel"><button class="arrow prev" id="prev" aria-label="আগেরটি">‹</button>
     <div class="track" id="track">{slides}</div>
@@ -368,7 +455,8 @@ class Site:
     <div class="cats">{cats}</div></section>
   <section class="block"><div class="sec-head"><h2>যোগাযোগ</h2><div class="bar"></div></div>{contact}</section>
 </div>""".format(name=esc(self.name), branch=esc(self.branch), tag=esc(self.tagline), about=about_first,
-                 pillars=self.pillars_html(), slides=slides, cats=self.cat_cards(), contact=self.contact_box())
+                 pillars=self.pillars_html(), slides=slides, cats=self.cat_cards(), contact=self.contact_box(),
+                 committee=committee_home)
         first_img = next((img_url((p.get("images") or [None])[0]) for p in self.posts if (p.get("images") or [None])[0]), None)
         write("index.html", self.layout(self.full_name, desc, body, "home", "/", image="/images/pathakbondhu-logo.png",
                                         scripts=CAROUSEL_JS))
