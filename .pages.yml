@@ -37,7 +37,9 @@ content:
         label: ফেসবুক লিংক
         type: string
       - name: edited
-        label: আমি নিজে এডিট করেছি
+        label: আমি নিজে এডিট করেছি (টিক দিলে ফেসবুক সিঙ্ক এটা আর বদলাবে না)
         type: boolean
         default: true
-
+      - name: auto
+        label: সিস্টেম কোড (বদলাবেন না, মুছবেন না)
+        type: string
