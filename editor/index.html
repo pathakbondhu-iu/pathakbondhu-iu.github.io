@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>এডিটর | পাঠকবন্ধু</title>
+<link rel="icon" href="/images/pathakbondhu-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Tiro+Bangla&display=swap" rel="stylesheet">
+<style>
+  :root{--deep:#083a2c;--green:#0f5c45;--soft:#e6f0ea;--gold:#c99a2e;--paper:#f6f4ee;--ink:#1b2a24;--muted:#63726b;--line:#dcd8cb;--red:#b3261e}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Hind Siliguri",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6}
+  h1,h2,h3{font-family:"Tiro Bangla","Hind Siliguri",serif;font-weight:400;margin:0}
+  .bar{background:var(--deep);color:#fff;border-bottom:3px solid var(--gold);padding:10px 16px;display:flex;align-items:center;gap:12px;justify-content:space-between}
+  .bar h1{font-size:1.25rem}
+  .wrap{max-width:860px;margin:0 auto;padding:16px}
+  .box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+  label{display:block;font-weight:600;margin:12px 0 4px;font-size:.92rem}
+  input[type=text],input[type=password],input[type=date],input[type=email],select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;background:#fff}
+  textarea{min-height:140px;resize:vertical}
+  button{font:inherit;cursor:pointer;border-radius:10px;border:0;padding:8px 16px}
+  .btn{background:var(--green);color:#fff;font-weight:600}.btn:hover{background:var(--deep)}
+  .btn.sec{background:#e9e6dc;color:var(--ink)}.btn.danger{background:#fbe9e7;color:var(--red)}
+  .btn.sm{padding:4px 12px;font-size:.88rem}
+  .link{background:none;color:var(--green);text-decoration:underline;padding:4px 0}
+  .muted{color:var(--muted);font-size:.9rem}
+  .hint{background:#fff8e1;border:1px solid #f0dca0;border-radius:10px;padding:10px 12px;font-size:.9rem;margin-top:10px}
+  .tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button{background:#e9e6dc}.tabs button.on{background:var(--green);color:#fff}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+  .toolbar input[type=text]{flex:1 1 180px}.toolbar select{flex:0 1 160px}
+  .row{display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:10px 4px}
+  .row:last-child{border-bottom:0}.row .t{flex:1;min-width:0}
+  .row .t b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .chip{display:inline-block;font-size:.76rem;background:var(--soft);color:var(--green);padding:0 9px;border-radius:10px;font-weight:600}
+  .chip.hid{background:#eee;color:#666}
+  #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--deep);color:#fff;padding:10px 18px;border-radius:12px;max-width:92%;display:none;z-index:99;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+  #toast.err{background:var(--red)}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);overflow:auto;padding:14px;z-index:50;display:none}
+  .modal.open{display:block}.modal .panel{max-width:720px;margin:0 auto;background:#fff;border-radius:16px;padding:18px}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .thumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .thumb{position:relative;width:92px;height:92px;border-radius:10px;overflow:hidden;background:var(--soft);border:1px solid var(--line)}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .thumb button{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.65);color:#fff;border-radius:50%;width:22px;height:22px;padding:0;line-height:22px}
+  .prow{display:grid;grid-template-columns:70px 1fr auto;gap:8px;align-items:start;margin-top:8px}
+  .prow textarea{min-height:60px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:520px){.two{grid-template-columns:1fr}.prow{grid-template-columns:60px 1fr}}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="bar"><h1>✏️ পাঠকবন্ধু এডিটর</h1><div><a href="/" style="color:#d8ebe2;margin-right:12px">সাইট দেখুন</a><button class="btn sec sm" id="logout" hidden>বের হন</button></div></div>
+
+<!-- প্রবেশ -->
+<div class="wrap" id="loginView">
+  <div class="box" id="unlockBox" hidden>
+    <h2>প্রবেশ করুন</h2>
+    <label for="pw">পাসওয়ার্ড</label>
+    <input type="password" id="pw" autocomplete="current-password">
+    <div class="actions"><button class="btn" id="unlockBtn">প্রবেশ</button></div>
+    <p><button class="link" id="toSetup">নতুন ডিভাইস বা টোকেন বদলাতে চাই</button><br>
+    <button class="link" id="forget">এই ডিভাইস থেকে সংরক্ষিত তথ্য মুছুন</button></p>
+  </div>
+  <div class="box" id="setupBox" hidden>
+    <h2>প্রথমবার সেটআপ</h2>
+    <p class="muted">এই ডিভাইসে একবার GitHub টোকেন দিয়ে পাসওয়ার্ড ঠিক করুন। এরপর থেকে শুধু পাসওয়ার্ড দিলেই চলবে। টোকেনটি পাসওয়ার্ড দিয়ে তালাবদ্ধ করে শুধু এই ব্রাউজারে রাখা হয়, কোথাও পাঠানো বা প্রকাশ করা হয় না।</p>
+    <label for="repo">রিপোজিটরি (মালিক/নাম)</label>
+    <input type="text" id="repo" placeholder="pathabondhu-iu/pathabondhu-iu.github.io">
+    <label for="tok">GitHub টোকেন</label>
+    <input type="password" id="tok" placeholder="github_pat_..." autocomplete="off">
+    <label for="np1">নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)</label>
+    <input type="password" id="np1" autocomplete="new-password">
+    <label for="np2">পাসওয়ার্ড আবার লিখুন</label>
+    <input type="password" id="np2" autocomplete="new-password">
+    <div class="actions"><button class="btn" id="setupBtn">সংরক্ষণ করে প্রবেশ</button><button class="btn sec" id="cancelSetup" hidden>ফিরে যান</button></div>
+    <div class="hint">টোকেন কীভাবে বানাবেন তা কথোপকথনে ধাপে ধাপে বলা আছে। মনে রাখবেন: টোকেন আর পাসওয়ার্ড কাউকে দেবেন না।</div>
+  </div>
+</div>
+
+<!-- এডিটর -->
+<div class="wrap" id="appView" hidden>
+  <div class="tabs"><button id="tabPosts" class="on">পোস্ট</button><button id="tabSite">সাইটের তথ্য</button></div>
+
+  <div id="postsPane">
+    <div class="toolbar">
+      <input type="text" id="q" placeholder="খুঁজুন...">
+      <select id="fcat"></select>
+      <label style="margin:0;font-weight:400"><input type="checkbox" id="showHidden"> লুকানো পোস্টও দেখান</label>
+      <button class="btn" id="newPost">+ নতুন পোস্ট</button>
+    </div>
+    <div class="box" id="list"></div>
+  </div>
+
+  <div id="sitePane" hidden>
+    <div class="box">
+      <h2>সাইটের তথ্য</h2>
+      <label for="s_email">যোগাযোগের ইমেইল</label><input type="email" id="s_email">
+      <label for="s_fb">ফেসবুক পেইজের লিংক</label><input type="text" id="s_fb">
+      <label for="s_about">আমাদের কথা (প্রতিটি অনুচ্ছেদের মাঝে একটি ফাঁকা লাইন রাখুন)</label><textarea id="s_about"></textarea>
+      <label>তিনটি কার্ড (আইকন, শিরোনাম, লেখা)</label>
+      <div id="s_pillars"></div>
+      <button class="btn sec sm" id="addPillar" style="margin-top:8px">+ কার্ড যোগ করুন</button>
+      <div class="actions"><button class="btn" id="saveSite">সংরক্ষণ করুন</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- পোস্ট এডিট -->
+<div class="modal" id="modal"><div class="panel">
+  <h2 id="mTitle">পোস্ট এডিট</h2>
+  <label for="f_title">শিরোনাম</label><input type="text" id="f_title">
+  <div class="two">
+    <div><label for="f_date">তারিখ</label><input type="date" id="f_date"></div>
+    <div><label for="f_cat">ক্যাটাগরি</label><select id="f_cat"></select></div>
+  </div>
+  <label for="f_text">বিস্তারিত লেখা</label><textarea id="f_text"></textarea>
+  <label>ছবি</label>
+  <div class="thumbs" id="f_thumbs"></div>
+  <input type="file" id="f_file" accept="image/*" multiple style="margin-top:8px">
+  <label for="f_fb">ফেসবুক লিংক (ঐচ্ছিক)</label><input type="text" id="f_fb">
+  <div class="actions">
+    <button class="btn" id="m_save">সংরক্ষণ করুন</button>
+    <button class="btn sec" id="m_cancel">বাতিল</button>
+    <button class="btn danger" id="m_del"></button>
+  </div>
+</div></div>
+<div id="toast"></div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var VAULT_KEY = "pb_vault_v1";
+  var S = { token: "", repo: "", posts: [], postsSha: "", site: null, siteSha: "", cats: [], editing: null, imgs: [], previews: {}, busy: false };
+
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
+  function toast(msg, err) {
+    var t = $("toast"); t.textContent = msg; t.className = err ? "err" : ""; t.style.display = "block";
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.style.display = "none"; }, err ? 6000 : 3500);
+  }
+  function b64e(buf) { var s = ""; var a = new Uint8Array(buf); for (var i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s); }
+  function b64d(str) { var s = atob(str), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
+  function utf8e(s) { return btoa(unescape(encodeURIComponent(s))); }
+  function utf8d(b) { return decodeURIComponent(escape(atob(b.replace(/\s/g, "")))); }
+
+  // ---------- পাসওয়ার্ড দিয়ে টোকেন তালাবদ্ধ ----------
+  function deriveKey(pw, salt, iter) {
+    return crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]).then(function (km) {
+      return crypto.subtle.deriveKey({ name: "PBKDF2", salt: salt, iterations: iter, hash: "SHA-256" }, km,
+        { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+    });
+  }
+  function lockToken(token, pw, repo) {
+    var salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12)), iter = 250000;
+    return deriveKey(pw, salt, iter).then(function (key) {
+      return crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, new TextEncoder().encode(token));
+    }).then(function (ct) {
+      localStorage.setItem(VAULT_KEY, JSON.stringify({ iter: iter, salt: b64e(salt), iv: b64e(iv), ct: b64e(ct), repo: repo }));
+    });
+  }
+  function unlockToken(pw) {
+    var v = JSON.parse(localStorage.getItem(VAULT_KEY));
+    return deriveKey(pw, b64d(v.salt), v.iter).then(function (key) {
+      return crypto.subtle.decrypt({ name: "AES-GCM", iv: b64d(v.iv) }, key, b64d(v.ct));
+    }).then(function (pt) { return { token: new TextDecoder().decode(pt), repo: v.repo }; });
+  }
+  function hasVault() { try { return !!localStorage.getItem(VAULT_KEY); } catch (e) { return false; } }
+
+  // ---------- GitHub API ----------
+  function gh(method, path, body, accept) {
+    var headers = { "Authorization": "Bearer " + S.token, "Accept": accept || "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
+    if (body) headers["Content-Type"] = "application/json";
+    return fetch("https://api.github.com/repos/" + S.repo + path, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined })
+      .then(function (r) {
+        if (r.ok) return r;
+        var msg = "GitHub ত্রুটি (" + r.status + ")";
+        if (r.status === 401) msg = "টোকেন ভুল বা মেয়াদ শেষ। নতুন টোকেন দিয়ে সেটআপ করুন।";
+        else if (r.status === 403) msg = "অনুমতি নেই বা সীমা শেষ। টোকেনের Contents → Read and write অনুমতি আছে কিনা দেখুন।";
+        else if (r.status === 404) msg = "রিপোজিটরি বা ফাইল পাওয়া যায়নি। রিপোজিটরির নাম ও টোকেনের অনুমতি দেখুন।";
+        else if (r.status === 409 || r.status === 422) msg = "ফাইলটি এর মধ্যে অন্য কোথাও বদলেছে। পাতা রিফ্রেশ করে আবার চেষ্টা করুন।";
+        var e = new Error(msg); e.status = r.status; throw e;
+      });
+  }
+  function getFile(path) {
+    return gh("GET", "/contents/" + path).then(function (r) { return r.json(); }).then(function (j) {
+      if (j.content && j.encoding === "base64") return { sha: j.sha, text: utf8d(j.content) };
+      return gh("GET", "/contents/" + path, null, "application/vnd.github.raw+json").then(function (r) { return r.text(); })
+        .then(function (t) { return { sha: j.sha, text: t }; });
+    });
+  }
+  function putFile(path, contentB64, sha, message) {
+    var body = { message: message, content: contentB64 }; if (sha) body.sha = sha;
+    return gh("PUT", "/contents/" + path, body).then(function (r) { return r.json(); });
+  }
+
+  // ---------- প্রবেশ ----------
+  function showLogin() {
+    $("appView").hidden = true; $("loginView").hidden = false; $("logout").hidden = true;
+    if (hasVault()) { $("unlockBox").hidden = false; $("setupBox").hidden = true; $("pw").focus(); }
+    else { openSetup(false); }
+  }
+  function openSetup(canCancel) {
+    $("unlockBox").hidden = true; $("setupBox").hidden = false; $("cancelSetup").hidden = !canCancel;
+    var guess = "";
+    if (/\.github\.io$/.test(location.hostname)) guess = location.hostname.replace(".github.io", "") + "/" + location.hostname;
+    try { var v = JSON.parse(localStorage.getItem(VAULT_KEY)); if (v && v.repo) guess = v.repo; } catch (e) {}
+    $("repo").value = $("repo").value || guess;
+  }
+  function enter(token, repo) {
+    S.token = token; S.repo = repo;
+    return loadAll().then(function () {
+      $("loginView").hidden = true; $("appView").hidden = false; $("logout").hidden = false;
+      renderList();
+    });
+  }
+  function loadAll() {
+    return Promise.all([getFile("data/posts.json"), fetch("/site.json?_=" + Date.now()).then(function (r) { return r.json(); }).catch(function () { return null; })])
+      .then(function (res) {
+        S.posts = JSON.parse(res[0].text); S.postsSha = res[0].sha;
+        var cfg = res[1];
+        S.cats = (cfg && cfg.categories ? cfg.categories.map(function (c) { return c.name; }) : ["খবর", "ইভেন্ট", "ঘোষণা", "সেবামূলক কাজ", "শিক্ষামূলক", "গ্যালারি", "সাধারণ"]);
+        fillCatSelects();
+      });
+  }
+  function fillCatSelects() {
+    var f = $("fcat"); f.textContent = "";
+    var o = el("option", "", "সব ক্যাটাগরি"); o.value = ""; f.appendChild(o);
+    var m = $("f_cat"); m.textContent = "";
+    S.cats.forEach(function (c) {
+      var a = el("option", "", c); a.value = c; f.appendChild(a);
+      var b = el("option", "", c); b.value = c; m.appendChild(b);
+    });
+  }
+
+  $("setupBtn").onclick = function () {
+    var repo = $("repo").value.trim(), tok = $("tok").value.trim(), p1 = $("np1").value, p2 = $("np2").value;
+    if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) return toast("রিপোজিটরির নাম মালিক/নাম আকারে লিখুন", true);
+    if (!tok) return toast("GitHub টোকেন দিন", true);
+    if (p1.length < 8) return toast("পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের দিন", true);
+    if (p1 !== p2) return toast("দুটি পাসওয়ার্ড মিলছে না", true);
+    $("setupBtn").disabled = true;
+    S.token = tok; S.repo = repo;
+    loadAll().then(function () { return lockToken(tok, p1, repo); }).then(function () {
+      $("tok").value = ""; $("np1").value = ""; $("np2").value = "";
+      $("loginView").hidden = true; $("appView").hidden = false; $("logout").hidden = false; renderList();
+    }).catch(function (e) { S.token = ""; toast(e.message || "সেটআপ ব্যর্থ", true); })
+      .then(function () { $("setupBtn").disabled = false; });
+  };
+  $("unlockBtn").onclick = function () {
+    var pw = $("pw").value; if (!pw) return;
+    $("unlockBtn").disabled = true;
+    unlockToken(pw).then(function (r) { $("pw").value = ""; return enter(r.token, r.repo); })
+      .catch(function (e) { S.token = ""; toast(e && e.status ? e.message : "ভুল পাসওয়ার্ড", true); })
+      .then(function () { $("unlockBtn").disabled = false; });
+  };
+  $("pw").addEventListener("keydown", function (e) { if (e.key === "Enter") $("unlockBtn").click(); });
+  $("toSetup").onclick = function () { openSetup(true); };
+  $("cancelSetup").onclick = showLogin;
+  $("forget").onclick = function () {
+    if (confirm("এই ডিভাইস থেকে সংরক্ষিত টোকেন মুছে ফেলবেন? আবার ঢুকতে নতুন করে সেটআপ করতে হবে।")) { localStorage.removeItem(VAULT_KEY); showLogin(); }
+  };
+  $("logout").onclick = function () { S.token = ""; S.posts = []; showLogin(); };
+
+  // ---------- ট্যাব ----------
+  function tab(name) {
+    $("postsPane").hidden = name !== "posts"; $("sitePane").hidden = name !== "site";
+    $("tabPosts").className = name === "posts" ? "on" : ""; $("tabSite").className = name === "site" ? "on" : "";
+    if (name === "site") loadSite();
+  }
+  $("tabPosts").onclick = function () { tab("posts"); };
+  $("tabSite").onclick = function () { tab("site"); };
+
+  // ---------- পোস্টের তালিকা ----------
+  function bnDate(s) { return (s || "").slice(0, 10); }
+  function renderList() {
+    var box = $("list"); box.textContent = "";
+    var q = $("q").value.trim().toLowerCase(), fc = $("fcat").value, sh = $("showHidden").checked;
+    var list = S.posts.map(function (p, i) { return { p: p, i: i }; }).filter(function (x) {
+      if (x.p.hidden && !sh) return false;
+      if (fc && x.p.category !== fc) return false;
+      if (q && ((x.p.title || "") + " " + (x.p.text || "")).toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    }).sort(function (a, b) { return String(b.p.date || "").slice(0, 19).localeCompare(String(a.p.date || "").slice(0, 19)); });
+    if (!list.length) { box.appendChild(el("p", "muted", "কোনো পোস্ট পাওয়া যায়নি।")); return; }
+    list.forEach(function (x) {
+      var r = el("div", "row"), t = el("div", "t");
+      t.appendChild(el("b", "", x.p.title || "(শিরোনাম নেই)"));
+      var m = el("span", "muted", bnDate(x.p.date) + " ");
+      m.appendChild(el("span", "chip", x.p.category || "সাধারণ"));
+      if (x.p.hidden) { m.appendChild(document.createTextNode(" ")); m.appendChild(el("span", "chip hid", "লুকানো")); }
+      t.appendChild(m); r.appendChild(t);
+      var b = el("button", "btn sm", "এডিট"); b.onclick = function () { openEditor(x.i); };
+      r.appendChild(b); box.appendChild(r);
+    });
+  }
+  ["input", "change"].forEach(function (ev) { $("q").addEventListener(ev, renderList); $("fcat").addEventListener(ev, renderList); $("showHidden").addEventListener(ev, renderList); });
+
+  // ---------- পোস্ট এডিটর ----------
+  function isFb(p) { return String(p.id || "").indexOf("_") >= 0; }
+  function today() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function thumbSrc(path) {
+    if (S.previews[path]) return S.previews[path];
+    if (/^https?:\/\//.test(path)) return path;
+    return "/" + String(path).replace(/^\/+/, "");
+  }
+  function renderThumbs() {
+    var box = $("f_thumbs"); box.textContent = "";
+    S.imgs.forEach(function (path, i) {
+      var t = el("div", "thumb"), im = el("img"); im.src = thumbSrc(path); im.alt = ""; t.appendChild(im);
+      var x = el("button", "", "×"); x.title = "সরান"; x.onclick = function () { S.imgs.splice(i, 1); renderThumbs(); };
+      t.appendChild(x); box.appendChild(t);
+    });
+  }
+  function openEditor(idx) {
+    var isNew = idx < 0, p = isNew ? { id: "manual-" + Date.now(), title: "", date: today(), category: "সাধারণ", text: "", images: [], fb_url: "" } : S.posts[idx];
+    S.editing = { idx: idx, isNew: isNew, origDate: p.date || "" };
+    S.imgs = (p.images || []).slice();
+    $("mTitle").textContent = isNew ? "নতুন পোস্ট" : "পোস্ট এডিট";
+    $("f_title").value = p.title || ""; $("f_date").value = bnDate(p.date) || today();
+    var cat = p.category && S.cats.indexOf(p.category) >= 0 ? p.category : (S.cats.indexOf("সাধারণ") >= 0 ? "সাধারণ" : S.cats[0]);
+    $("f_cat").value = cat; $("f_text").value = p.text || ""; $("f_fb").value = p.fb_url || "";
+    var d = $("m_del");
+    if (isNew) d.hidden = true;
+    else { d.hidden = false; d.textContent = isFb(p) ? (p.hidden ? "আবার দেখান" : "সাইট থেকে লুকান") : "মুছে ফেলুন"; }
+    renderThumbs(); $("modal").classList.add("open");
+  }
+  $("newPost").onclick = function () { openEditor(-1); };
+  $("m_cancel").onclick = function () { $("modal").classList.remove("open"); };
+
+  function resizeToJpeg(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function () {
+        var max = 1600, w = img.width, h = img.height, k = Math.min(1, max / Math.max(w, h));
+        var c = document.createElement("canvas"); c.width = Math.round(w * k); c.height = Math.round(h * k);
+        var ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(function (b) { URL.revokeObjectURL(url); b ? resolve(b) : reject(new Error("ছবি প্রস্তুত করা যায়নি")); }, "image/jpeg", 0.85);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error("ছবিটি পড়া যায়নি")); };
+      img.src = url;
+    });
+  }
+  function blobB64(blob) {
+    return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result).split(",")[1]); }; r.onerror = rej; r.readAsDataURL(blob); });
+  }
+  $("f_file").onchange = function () {
+    var files = Array.prototype.slice.call(this.files || []); this.value = "";
+    if (!files.length) return;
+    toast("ছবি আপলোড হচ্ছে...");
+    files.reduce(function (chain, f, n) {
+      return chain.then(function () {
+        return resizeToJpeg(f).then(function (blob) {
+          var path = "images/uploads/" + Date.now() + "-" + n + ".jpg";
+          return blobB64(blob).then(function (b) { return putFile(path, b, null, "এডিটর: ছবি আপলোড"); }).then(function () {
+            S.previews[path] = URL.createObjectURL(blob); S.imgs.push(path); renderThumbs();
+          });
+        });
+      });
+    }, Promise.resolve()).then(function () { toast("ছবি যোগ হয়েছে। এখন পোস্ট সংরক্ষণ করুন।"); })
+      .catch(function (e) { toast(e.message || "ছবি আপলোড ব্যর্থ", true); });
+  };
+
+  function savePosts(message) {
+    return putFile("data/posts.json", utf8e(JSON.stringify(S.posts, null, 2)), S.postsSha, message).then(function (j) {
+      S.postsSha = j.content.sha; renderList();
+    });
+  }
+  function guard(fn) {
+    if (S.busy) return; S.busy = true;
+    Promise.resolve().then(fn).catch(function (e) { toast(e.message || "ত্রুটি হয়েছে", true); }).then(function () { S.busy = false; });
+  }
+  $("m_save").onclick = function () {
+    guard(function () {
+      var ed = S.editing, title = $("f_title").value.trim();
+      if (!title) { toast("শিরোনাম লিখুন", true); return; }
+      var date = $("f_date").value || today();
+      if (!ed.isNew && date === bnDate(ed.origDate)) date = ed.origDate;
+      var base = ed.isNew ? { id: "manual-" + Date.now() } : S.posts[ed.idx];
+      var p = Object.assign({}, base, { title: title, date: date, category: $("f_cat").value, text: $("f_text").value,
+        images: S.imgs.slice(), fb_url: $("f_fb").value.trim(), edited: true });
+      if (ed.isNew) S.posts.unshift(p); else S.posts[ed.idx] = p;
+      return savePosts("এডিটর: " + (ed.isNew ? "নতুন পোস্ট" : "পোস্ট আপডেট")).then(function () {
+        $("modal").classList.remove("open"); toast("সংরক্ষিত হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে।");
+      }).catch(function (e) {
+        if (ed.isNew) S.posts.shift(); else S.posts[ed.idx] = base;
+        throw e;
+      });
+    });
+  };
+  $("m_del").onclick = function () {
+    guard(function () {
+      var ed = S.editing, p = S.posts[ed.idx], backup = S.posts.slice(), msg;
+      if (isFb(p)) {
+        if (!p.hidden && !confirm("এই পোস্টটি সাইট থেকে লুকানো হবে (ফেসবুকে থেকে যাবে)। নিশ্চিত?")) return;
+        S.posts[ed.idx] = Object.assign({}, p, { hidden: !p.hidden, edited: true }); msg = p.hidden ? "পোস্ট আবার দেখানো হলো" : "পোস্ট লুকানো হলো";
+      } else {
+        if (!confirm("এই পোস্টটি স্থায়ীভাবে মুছে ফেলবেন?")) return;
+        S.posts.splice(ed.idx, 1); msg = "পোস্ট মুছে ফেলা হয়েছে";
+      }
+      return savePosts("এডিটর: " + msg).then(function () {
+        $("modal").classList.remove("open"); toast(msg + "। সাইটে আসতে ১–২ মিনিট লাগবে।");
+      }).catch(function (e) { S.posts = backup; throw e; });
+    });
+  };
+
+  // ---------- সাইটের তথ্য ----------
+  function pillarRow(x) {
+    var r = el("div", "prow"), ic = el("input"), tt = el("input"), tx = el("textarea"), del = el("button", "btn danger sm", "মুছুন");
+    ic.type = "text"; ic.placeholder = "আইকন"; ic.value = x.icon || ""; ic.className = "pi";
+    tt.type = "text"; tt.placeholder = "শিরোনাম"; tt.value = x.title || ""; tt.className = "pt";
+    tx.placeholder = "ছোট বর্ণনা"; tx.value = x.text || ""; tx.className = "px";
+    var mid = el("div"); mid.appendChild(tt); mid.appendChild(tx);
+    del.onclick = function () { r.remove(); };
+    r.appendChild(ic); r.appendChild(mid); r.appendChild(del); return r;
+  }
+  function loadSite() {
+    if (S.site) return;
+    getFile("site.json").then(function (f) {
+      S.site = JSON.parse(f.text); S.siteSha = f.sha;
+      $("s_email").value = S.site.email || ""; $("s_fb").value = S.site.facebook || "";
+      $("s_about").value = (S.site.about || []).join("\n\n");
+      var box = $("s_pillars"); box.textContent = "";
+      (S.site.pillars || []).forEach(function (x) { box.appendChild(pillarRow(x)); });
+    }).catch(function (e) { toast(e.message || "সাইটের তথ্য আনা যায়নি", true); });
+  }
+  $("addPillar").onclick = function () { $("s_pillars").appendChild(pillarRow({})); };
+  $("saveSite").onclick = function () {
+    guard(function () {
+      if (!S.site) { toast("তথ্য এখনো লোড হয়নি", true); return; }
+      var pillars = Array.prototype.slice.call($("s_pillars").children).map(function (r) {
+        return { icon: r.querySelector(".pi").value.trim(), title: r.querySelector(".pt").value.trim(), text: r.querySelector(".px").value.trim() };
+      }).filter(function (x) { return x.title || x.text; });
+      var about = $("s_about").value.split(/\n\s*\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+      var next = Object.assign({}, S.site, { email: $("s_email").value.trim(), facebook: $("s_fb").value.trim(), about: about, pillars: pillars });
+      return putFile("site.json", utf8e(JSON.stringify(next, null, 2) + "\n"), S.siteSha, "এডিটর: সাইটের তথ্য আপডেট").then(function (j) {
+        S.site = next; S.siteSha = j.content.sha; toast("সংরক্ষিত হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে।");
+      });
+    });
+  };
+
+  showLogin();
+})();
+</script>
+</body>
+</html>
