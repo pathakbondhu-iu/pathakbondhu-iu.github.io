@@ -125,7 +125,7 @@ section.block{padding:46px 0 10px}
 @media(max-width:640px){.arrow{display:none}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;height:100%;transition:transform .2s,box-shadow .2s}
 .card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
-.card .pic{width:100%;height:190px;object-fit:cover;display:block;background:var(--soft)}
+.card .pic{width:100%;height:190px;object-fit:cover;object-position:center top;display:block;background:var(--soft)}
 .card .ph{height:190px;display:flex;align-items:center;justify-content:center;font-size:3.2rem;background:linear-gradient(135deg,var(--soft),#fff3d6)}
 .card .body{padding:14px 16px 16px;display:flex;flex-direction:column;flex:1}
 .chip{display:inline-block;font-size:.78rem;font-weight:600;background:var(--soft);color:var(--green);padding:1px 11px;border-radius:12px;text-decoration:none}
@@ -278,9 +278,14 @@ class Site:
         href = "/post/{}/".format(p["_slug"])
         cat = p["_cat"]
         img = img_url((p.get("images") or [None])[0])
-        ph = '<div class="ph">{}</div>'.format(cat["icon"])
-        pic = ('<a href="{}"><img class="pic" src="{}" alt="{}" loading="lazy" '
-               'onerror="this.outerHTML=\'{}\'"></a>'.format(esc(href), esc(img), esc(p.get("title")), ph.replace("'", "&#39;"))
+        icon = cat.get("icon", "📌")
+        ph = '<div class="ph">{}</div>'.format(esc(icon))
+        safe_icon = re.sub(r"[^\w\u0080-\U0010ffff]", "", str(icon)) or "📌"
+        # onerror-এ শুধু একক উদ্ধৃতি ব্যবহার হয়, যাতে HTML না ভাঙে
+        fallback = ("this.onerror=null;this.replaceWith(Object.assign(document.createElement('div'),"
+                    "{className:'ph',textContent:'" + safe_icon + "'}))")
+        pic = ('<a href="{}"><img class="pic" src="{}" alt="{}" loading="lazy" onerror="{}"></a>'.format(
+            esc(href), esc(img), esc(p.get("title")), esc(fallback))
                if img else '<a href="{}">{}</a>'.format(esc(href), ph))
         return ('<article class="card">{pic}<div class="body"><div><a class="chip" href="/category/{slug}/">{cat}</a>'
                 '<span class="date">{date}</span></div><h3><a href="{href}">{title}</a></h3><p>{ex}</p>'
