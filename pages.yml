@@ -1,0 +1,42 @@
+media:
+  - name: images
+    label: ছবি
+    input: images
+    output: /images
+
+content:
+  - name: posts
+    label: সব পোস্ট
+    type: file
+    path: data/posts.json
+    format: json
+    list: true
+    fields:
+      - name: id
+        label: আইডি (বদলাবেন না)
+        type: string
+      - name: title
+        label: শিরোনাম
+        type: string
+      - name: date
+        label: তারিখ (যেমন 2026-11-06)
+        type: string
+      - name: category
+        label: ক্যাটাগরি
+        type: select
+        options:
+          values: [খবর, ইভেন্ট, ঘোষণা, সেবামূলক কাজ, শিক্ষামূলক, গ্যালারি, সাধারণ]
+      - name: text
+        label: বিস্তারিত লেখা
+        type: text
+      - name: images
+        label: ছবি
+        type: string
+        list: true
+      - name: fb_url
+        label: ফেসবুক লিংক
+        type: string
+      - name: edited
+        label: আমি নিজে এডিট করেছি
+        type: boolean
+        default: true
