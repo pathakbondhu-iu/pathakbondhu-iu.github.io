@@ -5,46 +5,79 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা</title>
 <meta name="description" content="পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা: অরাজনৈতিক, সেবামূলক ও শিক্ষামূলক সামাজিক সংগঠন। দৈনিক আজকের পত্রিকার সহযোগী সংগঠন।">
+<link rel="icon" href="images/pathakbondhu-logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
 <style>
-  :root { --green:#0f6b4f; --dark:#0b3d2e; --bg:#f6f8f7; --card:#fff; --text:#1c2a25; --muted:#66756f; --line:#dfe6e3; }
+  :root { --green:#0f6b4f; --dark:#0b3d2e; --gold:#d9a93a; --bg:#f6f8f7; --card:#fff; --text:#1c2a25; --muted:#66756f; --line:#dfe6e3; }
   * { box-sizing: border-box; }
-  body { margin:0; font-family: "Noto Sans Bengali","Kalpurush","SolaimanLipi",system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.7; }
-  header { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fff; padding:36px 16px 28px; text-align:center; }
-  header h1 { margin:0; font-size:2rem; }
-  header .branch { margin:4px 0 0; font-size:1.1rem; opacity:.95; }
-  header .about { margin:12px auto 0; max-width:640px; font-size:.95rem; opacity:.9; }
-  header .partner { display:inline-block; margin-top:14px; padding:4px 14px; border:1px solid rgba(255,255,255,.5); border-radius:20px; font-size:.85rem; }
-  nav { position:sticky; top:0; background:#fff; border-bottom:1px solid var(--line); z-index:5; }
+  body { margin:0; font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.75; }
+  h1,h2,h3,.brand { font-family:"Tiro Bangla","Hind Siliguri",serif; font-weight:400; }
+
+  /* হেডার */
+  header { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fff; padding:28px 16px 30px; text-align:center; position:relative; }
+  header::after { content:""; position:absolute; left:0; right:0; bottom:0; height:4px; background:linear-gradient(90deg,var(--gold),#f3d98a,var(--gold)); }
+  .logo-main { height:110px; width:auto; max-width:80%; display:block; margin:0 auto 10px; filter:drop-shadow(0 4px 10px rgba(0,0,0,.25)); }
+  header h1 { margin:0; font-size:2.3rem; letter-spacing:.5px; }
+  header .branch { margin:2px 0 0; font-size:1.2rem; color:#f3d98a; font-family:"Tiro Bangla",serif; }
+  header .about { margin:10px auto 0; max-width:640px; font-size:1rem; opacity:.92; }
+
+  /* সহযোগী ও বিশ্ববিদ্যালয়ের লোগো-স্ট্রিপ */
+  .partners { display:flex; justify-content:center; align-items:center; gap:28px; flex-wrap:wrap; margin-top:18px; }
+  .partner { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.3); border-radius:14px; padding:8px 16px; font-size:.9rem; }
+  .partner img { height:44px; width:auto; background:#fff; border-radius:8px; padding:3px; }
+
+  nav { position:sticky; top:0; background:#fff; border-bottom:1px solid var(--line); z-index:5; box-shadow:0 2px 8px rgba(0,0,0,.04); }
   nav .tabs { display:flex; gap:8px; overflow-x:auto; padding:10px 16px; max-width:960px; margin:auto; }
-  nav button { flex:0 0 auto; border:1px solid var(--line); background:#fff; color:var(--text); padding:6px 16px; border-radius:20px; font:inherit; cursor:pointer; }
+  nav button { flex:0 0 auto; border:1px solid var(--line); background:#fff; color:var(--text); padding:6px 18px; border-radius:20px; font:inherit; font-weight:500; cursor:pointer; transition:.15s; }
+  nav button:hover { border-color:var(--green); }
   nav button.active { background:var(--green); color:#fff; border-color:var(--green); }
-  main { max-width:960px; margin:20px auto; padding:0 16px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
+
+  main { max-width:960px; margin:22px auto; padding:0 16px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; transition:.2s; }
+  .card:hover { transform:translateY(-3px); box-shadow:0 10px 24px rgba(15,107,79,.12); }
   .card img { width:100%; height:180px; object-fit:cover; display:block; background:#e8eeeb; }
-  .card .body { padding:14px; }
-  .tag { display:inline-block; font-size:.78rem; background:#e3f2ec; color:var(--green); padding:1px 10px; border-radius:12px; }
+  .card .body { padding:14px 16px 16px; }
+  .tag { display:inline-block; font-size:.78rem; font-weight:600; background:#e3f2ec; color:var(--green); padding:1px 11px; border-radius:12px; }
   .date { font-size:.8rem; color:var(--muted); margin-left:6px; }
-  .card h3 { margin:8px 0 4px; font-size:1.05rem; }
-  .card p { margin:0; color:var(--muted); font-size:.92rem; white-space:pre-line; }
-  .card a.more { display:inline-block; margin-top:8px; color:var(--green); cursor:pointer; font-size:.9rem; text-decoration:underline; }
+  .card h3 { margin:8px 0 4px; font-size:1.15rem; line-height:1.5; }
+  .card p { margin:0; color:var(--muted); font-size:.94rem; white-space:pre-line; }
+  .card a.more { display:inline-block; margin-top:8px; color:var(--green); font-weight:600; cursor:pointer; font-size:.92rem; }
   .empty { text-align:center; color:var(--muted); padding:40px 0; }
-  footer { text-align:center; color:var(--muted); font-size:.85rem; padding:28px 16px 40px; }
-  footer a { color:var(--green); }
+
+  /* ফুটার */
+  footer { background:var(--dark); color:#cfe3da; text-align:center; font-size:.9rem; padding:28px 16px 34px; margin-top:30px; }
+  footer .flogos { display:flex; justify-content:center; align-items:center; gap:18px; margin-bottom:12px; flex-wrap:wrap; }
+  footer .flogos img { height:48px; width:auto; background:#fff; border-radius:8px; padding:4px; }
+  footer a { color:var(--gold); font-weight:600; }
+
   #modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:flex-start; justify-content:center; overflow:auto; padding:20px 12px; z-index:10; }
   #modal.open { display:flex; }
-  #modal .box { background:#fff; max-width:680px; width:100%; border-radius:12px; padding:18px; }
+  #modal .box { background:#fff; max-width:680px; width:100%; border-radius:14px; padding:18px; }
   #modal img { width:100%; border-radius:8px; margin:8px 0; }
   #modal .text { white-space:pre-line; }
   #modal button.close { float:right; border:0; background:#eee; border-radius:8px; padding:4px 12px; font:inherit; cursor:pointer; }
+  @media (max-width:520px) { header h1 { font-size:1.9rem; } .logo-main { height:90px; } }
 </style>
 </head>
 <body>
 <header>
+  <img class="logo-main" src="images/pathakbondhu-logo.png" alt="পাঠকবন্ধু লোগো" onerror="this.style.display='none'">
   <h1>পাঠকবন্ধু</h1>
   <p class="branch">ইসলামী বিশ্ববিদ্যালয় শাখা</p>
   <p class="about">অরাজনৈতিক, সেবামূলক ও শিক্ষামূলক সামাজিক সংগঠন</p>
-  <span class="partner">দৈনিক আজকের পত্রিকার সহযোগী সংগঠন</span>
+  <div class="partners">
+    <div class="partner">
+      <img src="images/iu-logo.png" alt="ইসলামী বিশ্ববিদ্যালয় লোগো" onerror="this.style.display='none'">
+      <span>ইসলামী বিশ্ববিদ্যালয়</span>
+    </div>
+    <div class="partner">
+      <img src="images/ajkerpatrika-logo.png" alt="দৈনিক আজকের পত্রিকা লোগো" onerror="this.style.display='none'">
+      <span>দৈনিক আজকের পত্রিকার<br>সহযোগী সংগঠন</span>
+    </div>
+  </div>
 </header>
 <nav><div class="tabs" id="tabs"></div></nav>
 <main>
@@ -52,17 +85,22 @@
   <div class="empty" id="empty" style="display:none">এই ক্যাটাগরিতে এখনো কোনো পোস্ট নেই।</div>
 </main>
 <footer>
+  <div class="flogos">
+    <img src="images/pathakbondhu-logo.png" alt="" onerror="this.style.display='none'">
+    <img src="images/iu-logo.png" alt="" onerror="this.style.display='none'">
+    <img src="images/ajkerpatrika-logo.png" alt="" onerror="this.style.display='none'">
+  </div>
   &copy; পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা<br>
+  দৈনিক আজকের পত্রিকার সহযোগী সংগঠন<br>
   <a id="fblink" href="#" target="_blank" rel="noopener">আমাদের ফেসবুক পেইজ</a>
 </footer>
 <div id="modal"><div class="box" id="modalBox"></div></div>
 
 <script>
-// ===== সেটিংস: এখানে শুধু ফেসবুক পেইজের লিংক বদলাবেন =====
-var FACEBOOK_PAGE_URL = "https://www.facebook.com/";
-// ক্যাটাগরির তালিকা (sync স্ক্রিপ্টের ক্যাটাগরির নামের সাথে মিল থাকতে হবে)
+// ===== সেটিংস =====
+var FACEBOOK_PAGE_URL = "https://www.facebook.com/pathakbondhu.iu";
 var CATEGORIES = ["সব","খবর","ইভেন্ট","ঘোষণা","সেবামূলক কাজ","শিক্ষামূলক","গ্যালারি","সাধারণ"];
-// ================================================================
+// ==================
 
 document.getElementById("fblink").href = FACEBOOK_PAGE_URL;
 var posts = [];
