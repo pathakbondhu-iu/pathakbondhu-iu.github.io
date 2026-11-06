@@ -81,7 +81,7 @@
 
 <!-- এডিটর -->
 <div class="wrap" id="appView" hidden>
-  <div class="tabs"><button id="tabPosts" class="on">পোস্ট</button><button id="tabSite">সাইটের তথ্য</button></div>
+  <div class="tabs"><button id="tabPosts" class="on">পোস্ট</button><button id="tabCommittee">কমিটি</button><button id="tabSite">সাইটের তথ্য</button></div>
 
   <div id="postsPane">
     <div class="toolbar">
@@ -93,7 +93,28 @@
     <div class="box" id="list"></div>
   </div>
 
+  <div id="committeePane" hidden>
+    <div class="box">
+      <h2>কমিটি</h2>
+      <label for="c_term">কমিটির মেয়াদ/পরিচয় (সাইটে শিরোনামের নিচে দেখাবে)</label>
+      <input type="text" id="c_term">
+      <div class="actions">
+        <button class="btn" id="c_new">+ নতুন সদস্য</button>
+        <button class="btn" id="c_save" hidden>ক্রম ও মেয়াদ সংরক্ষণ করুন</button>
+      </div>
+      <p class="muted">▲ ▼ বোতামে ক্রম বদলান, তারপর "ক্রম ও মেয়াদ সংরক্ষণ করুন" চাপুন। সাইটে "বড় করে দেখানো" টিক দেওয়া সদস্যরা (সভাপতি ও সাধারণ সম্পাদক) আলাদা বড় কার্ডে থাকবেন, বাকিরা গ্রুপ অনুযায়ী।</p>
+    </div>
+    <div class="box" id="cList"></div>
+  </div>
+
   <div id="sitePane" hidden>
+    <div class="box">
+      <h2>লোগো বদলান</h2>
+      <p class="muted">শুধু PNG ফাইল (৩ MB-এর কম)। বদলাতে ফাইল বেছে নিন।</p>
+      <label for="lg1">পাঠকবন্ধুর মেইন লোগো</label><input type="file" id="lg1" accept="image/png" data-path="images/pathakbondhu-logo.png">
+      <label for="lg2">ইসলামী বিশ্ববিদ্যালয়ের লোগো</label><input type="file" id="lg2" accept="image/png" data-path="images/iu-logo.png">
+      <label for="lg3">দৈনিক আজকের পত্রিকার লোগো</label><input type="file" id="lg3" accept="image/png" data-path="images/ajkerpatrika-logo.png">
+    </div>
     <div class="box">
       <h2>সাইটের তথ্য</h2>
       <label for="s_email">যোগাযোগের ইমেইল</label><input type="email" id="s_email">
@@ -124,6 +145,25 @@
     <button class="btn" id="m_save">সংরক্ষণ করুন</button>
     <button class="btn sec" id="m_cancel">বাতিল</button>
     <button class="btn danger" id="m_del"></button>
+  </div>
+</div></div>
+<!-- সদস্য এডিট -->
+<div class="modal" id="mmodal"><div class="panel">
+  <h2 id="mmTitle">সদস্য</h2>
+  <div class="two">
+    <div><label for="mm_name">নাম</label><input type="text" id="mm_name"></div>
+    <div><label for="mm_role">পদবি</label><input type="text" id="mm_role" placeholder="যেমন: সভাপতি"></div>
+  </div>
+  <label for="mm_info">বিভাগ / শিক্ষাবর্ষ (ঐচ্ছিক)</label><input type="text" id="mm_info">
+  <label for="mm_group">গ্রুপ</label><input type="text" id="mm_group" list="mm_groups"><datalist id="mm_groups"></datalist>
+  <label style="font-weight:400"><input type="checkbox" id="mm_feat"> বড় করে দেখান (সভাপতি / সাধারণ সম্পাদকের জন্য)</label>
+  <label>ছবি</label>
+  <div class="thumbs" id="mm_thumb"></div>
+  <input type="file" id="mm_file" accept="image/*" style="margin-top:8px">
+  <div class="actions">
+    <button class="btn" id="mm_save">সংরক্ষণ করুন</button>
+    <button class="btn sec" id="mm_cancel">বাতিল</button>
+    <button class="btn danger" id="mm_del">মুছে ফেলুন</button>
   </div>
 </div></div>
 <div id="toast"></div>
@@ -264,12 +304,15 @@
 
   // ---------- ট্যাব ----------
   function tab(name) {
-    $("postsPane").hidden = name !== "posts"; $("sitePane").hidden = name !== "site";
+    $("postsPane").hidden = name !== "posts"; $("sitePane").hidden = name !== "site"; $("committeePane").hidden = name !== "committee";
     $("tabPosts").className = name === "posts" ? "on" : ""; $("tabSite").className = name === "site" ? "on" : "";
+    $("tabCommittee").className = name === "committee" ? "on" : "";
     if (name === "site") loadSite();
+    if (name === "committee") loadCommittee();
   }
   $("tabPosts").onclick = function () { tab("posts"); };
   $("tabSite").onclick = function () { tab("site"); };
+  $("tabCommittee").onclick = function () { tab("committee"); };
 
   // ---------- পোস্টের তালিকা ----------
   function bnDate(s) { return (s || "").slice(0, 10); }
@@ -328,11 +371,11 @@
   $("newPost").onclick = function () { openEditor(-1); };
   $("m_cancel").onclick = function () { $("modal").classList.remove("open"); };
 
-  function resizeToJpeg(file) {
+  function resizeToJpeg(file, maxSide) {
     return new Promise(function (resolve, reject) {
       var url = URL.createObjectURL(file), img = new Image();
       img.onload = function () {
-        var max = 1600, w = img.width, h = img.height, k = Math.min(1, max / Math.max(w, h));
+        var max = maxSide || 1600, w = img.width, h = img.height, k = Math.min(1, max / Math.max(w, h));
         var c = document.createElement("canvas"); c.width = Math.round(w * k); c.height = Math.round(h * k);
         var ctx = c.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
         c.toBlob(function (b) { URL.revokeObjectURL(url); b ? resolve(b) : reject(new Error("ছবি প্রস্তুত করা যায়নি")); }, "image/jpeg", 0.85);
@@ -438,6 +481,118 @@
       });
     });
   };
+
+  // ---------- কমিটি ----------
+  S.cm = null; S.cmSha = ""; S.cmDirty = false; S.mEdit = null; S.mPhoto = "";
+  function cmInitial(name) { var m = String(name || "").match(/[ঀ-৿A-Za-z0-9]/); return m ? m[0] : "•"; }
+  function loadCommittee(force) {
+    if (S.cm && !force) { renderCommittee(); return; }
+    getFile("data/committee.json").then(function (f) { S.cm = JSON.parse(f.text); S.cmSha = f.sha; })
+      .catch(function (e) { if (e.status === 404) { S.cm = { term: "", members: [] }; S.cmSha = ""; } else throw e; })
+      .then(function () { S.cm.members = S.cm.members || []; $("c_term").value = S.cm.term || ""; S.cmDirty = false; renderCommittee(); })
+      .catch(function (e) { toast(e.message || "কমিটির তথ্য আনা যায়নি", true); });
+  }
+  function saveCommittee(msg) {
+    S.cm.term = $("c_term").value.trim();
+    return putFile("data/committee.json", utf8e(JSON.stringify(S.cm, null, 2) + "\n"), S.cmSha || null, msg).then(function (j) {
+      S.cmSha = j.content.sha; S.cmDirty = false; renderCommittee();
+    });
+  }
+  function renderCommittee() {
+    var box = $("cList"); box.textContent = ""; $("c_save").hidden = !S.cmDirty;
+    var ms = S.cm.members;
+    if (!ms.length) { box.appendChild(el("p", "muted", "এখনো কোনো সদস্য নেই। \"+ নতুন সদস্য\" চাপুন।")); return; }
+    ms.forEach(function (m, i) {
+      var r = el("div", "row");
+      var ph;
+      if (m.photo) { ph = el("img"); ph.src = thumbSrc(m.photo); ph.alt = ""; ph.onerror = function () { ph.style.display = "none"; }; }
+      else { ph = el("div", "", cmInitial(m.name)); }
+      ph.style.cssText = "width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:center top;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--green);flex:none";
+      r.appendChild(ph);
+      var t = el("div", "t"); t.appendChild(el("b", "", m.name || ""));
+      var s = el("span", "muted", (m.title || "") + " "); s.appendChild(el("span", "chip", m.group || "")); if (m.featured) { s.appendChild(document.createTextNode(" ")); s.appendChild(el("span", "chip", "বড় কার্ড")); }
+      t.appendChild(s); r.appendChild(t);
+      var up = el("button", "btn sec sm", "▲"), dn = el("button", "btn sec sm", "▼"), ed = el("button", "btn sm", "এডিট");
+      up.disabled = i === 0; dn.disabled = i === ms.length - 1;
+      up.onclick = function () { var x = ms[i]; ms[i] = ms[i - 1]; ms[i - 1] = x; S.cmDirty = true; renderCommittee(); };
+      dn.onclick = function () { var x = ms[i]; ms[i] = ms[i + 1]; ms[i + 1] = x; S.cmDirty = true; renderCommittee(); };
+      ed.onclick = function () { openMember(i); };
+      r.appendChild(up); r.appendChild(dn); r.appendChild(ed); box.appendChild(r);
+    });
+  }
+  $("c_term").addEventListener("input", function () { S.cmDirty = true; $("c_save").hidden = false; });
+  $("c_save").onclick = function () {
+    guard(function () { return saveCommittee("এডিটর: কমিটির ক্রম/মেয়াদ").then(function () { toast("সংরক্ষিত হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে।"); }); });
+  };
+  $("c_new").onclick = function () { if (!S.cm) return toast("একটু অপেক্ষা করুন, তথ্য লোড হচ্ছে", true); openMember(-1); };
+
+  function renderMemberThumb() {
+    var box = $("mm_thumb"); box.textContent = "";
+    if (!S.mPhoto) return;
+    var t = el("div", "thumb"), im = el("img"); im.src = thumbSrc(S.mPhoto); im.alt = ""; t.appendChild(im);
+    var x = el("button", "", "×"); x.title = "ছবি সরান"; x.onclick = function () { S.mPhoto = ""; renderMemberThumb(); };
+    t.appendChild(x); box.appendChild(t);
+  }
+  function openMember(i) {
+    var isNew = i < 0, m = isNew ? { id: "m-" + Date.now(), name: "", title: "", info: "", photo: "", group: "কার্যনির্বাহী কমিটি", featured: false } : S.cm.members[i];
+    S.mEdit = { idx: i, isNew: isNew }; S.mPhoto = m.photo || "";
+    $("mmTitle").textContent = isNew ? "নতুন সদস্য" : "সদস্য এডিট";
+    $("mm_name").value = m.name || ""; $("mm_role").value = m.title || ""; $("mm_info").value = m.info || "";
+    $("mm_group").value = m.group || ""; $("mm_feat").checked = !!m.featured;
+    var dl = $("mm_groups"); dl.textContent = "";
+    var seen = {}; S.cm.members.forEach(function (x) { if (x.group && !seen[x.group]) { seen[x.group] = 1; var o = el("option"); o.value = x.group; dl.appendChild(o); } });
+    $("mm_del").hidden = isNew; renderMemberThumb(); $("mmodal").classList.add("open");
+  }
+  $("mm_cancel").onclick = function () { $("mmodal").classList.remove("open"); };
+  $("mm_file").onchange = function () {
+    var f = this.files && this.files[0]; this.value = ""; if (!f) return;
+    toast("ছবি আপলোড হচ্ছে...");
+    resizeToJpeg(f, 900).then(function (blob) {
+      var path = "images/committee/" + Date.now() + ".jpg";
+      return blobB64(blob).then(function (b) { return putFile(path, b, null, "এডিটর: সদস্যের ছবি"); }).then(function () {
+        S.previews[path] = URL.createObjectURL(blob); S.mPhoto = path; renderMemberThumb(); toast("ছবি যোগ হয়েছে। এখন সদস্য সংরক্ষণ করুন।");
+      });
+    }).catch(function (e) { toast(e.message || "ছবি আপলোড ব্যর্থ", true); });
+  };
+  $("mm_save").onclick = function () {
+    guard(function () {
+      var ed = S.mEdit, name = $("mm_name").value.trim();
+      if (!name) { toast("নাম লিখুন", true); return; }
+      var backup = S.cm.members.slice();
+      var base = ed.isNew ? { id: "m-" + Date.now() } : S.cm.members[ed.idx];
+      var m = Object.assign({}, base, { name: name, title: $("mm_role").value.trim(), info: $("mm_info").value.trim(),
+        group: $("mm_group").value.trim() || "কার্যনির্বাহী কমিটি", featured: $("mm_feat").checked, photo: S.mPhoto });
+      if (ed.isNew) S.cm.members.push(m); else S.cm.members[ed.idx] = m;
+      return saveCommittee("এডিটর: কমিটির সদস্য " + (ed.isNew ? "যোগ" : "আপডেট")).then(function () {
+        $("mmodal").classList.remove("open"); toast("সংরক্ষিত হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে।");
+      }).catch(function (e) { S.cm.members = backup; throw e; });
+    });
+  };
+  $("mm_del").onclick = function () {
+    guard(function () {
+      var ed = S.mEdit; if (!confirm("এই সদস্যকে কমিটি থেকে মুছে ফেলবেন?")) return;
+      var backup = S.cm.members.slice(); S.cm.members.splice(ed.idx, 1);
+      return saveCommittee("এডিটর: কমিটির সদস্য মোছা").then(function () {
+        $("mmodal").classList.remove("open"); toast("মুছে ফেলা হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে।");
+      }).catch(function (e) { S.cm.members = backup; throw e; });
+    });
+  };
+
+  // ---------- লোগো বদলানো ----------
+  ["lg1", "lg2", "lg3"].forEach(function (id) {
+    $(id).onchange = function () {
+      var inp = this, f = inp.files && inp.files[0], path = inp.getAttribute("data-path"); inp.value = ""; if (!f) return;
+      if (f.type !== "image/png") return toast("শুধু PNG ফাইল দিন", true);
+      if (f.size > 3 * 1024 * 1024) return toast("ফাইলটি ৩ MB-এর বেশি বড়", true);
+      guard(function () {
+        toast("লোগো আপলোড হচ্ছে...");
+        return gh("GET", "/contents/" + path).then(function (r) { return r.json(); }).then(function (j) { return j.sha; })
+          .catch(function (e) { if (e.status === 404) return null; throw e; })
+          .then(function (sha) { return blobB64(f).then(function (b) { return putFile(path, b, sha, "এডিটর: লোগো আপডেট"); }); })
+          .then(function () { toast("লোগো বদলানো হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে (ব্রাউজার রিফ্রেশ করুন)।"); });
+      });
+    };
+  });
 
   showLogin();
 })();
