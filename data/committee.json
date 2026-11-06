@@ -36,6 +36,15 @@
       "group": "কার্যনির্বাহী কমিটি",
       "featured": false,
       "photo": ""
+    },
+    {
+      "id": "m-1793999423321",
+      "name": "আরমান হোসেন",
+      "title": "সভাপতি",
+      "info": "অর্থনীতি (২০২১-২২)",
+      "group": "কার্যনির্বাহী কমিটি",
+      "featured": true,
+      "photo": "images/committee/1793999418159.jpg"
     }
   ]
 }
