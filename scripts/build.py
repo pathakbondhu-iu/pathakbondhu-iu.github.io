@@ -3,7 +3,7 @@
 
 যে ফাইল ও ফোল্ডার এই স্ক্রিপ্ট নিজে বানায় (হাতে বদলাবেন না, প্রতিবার নতুন করে তৈরি হয়):
   index.html, 404.html, sitemap.xml, assets/style.css,
-  about/, category/, contact/, post/, posts/
+  about/, category/, committee/, contact/, post/, posts/
 """
 import hashlib
 import html
@@ -14,7 +14,7 @@ import shutil
 import sys
 
 ROOT = sys.argv[1] if len(sys.argv) > 1 else os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-GEN_DIRS = ["about", "category", "contact", "post", "posts"]
+GEN_DIRS = ["about", "category", "committee", "contact", "post", "posts"]
 
 MONTHS = ["জানুয়ারি", "ফেব্রুয়ারি", "মার্চ", "এপ্রিল", "মে", "জুন",
           "জুলাই", "আগস্ট", "সেপ্টেম্বর", "অক্টোবর", "নভেম্বর", "ডিসেম্বর"]
@@ -173,7 +173,7 @@ footer .flogos img{height:46px;width:auto;background:#fff;border-radius:10px;pad
 .mem.big{padding:26px 16px 22px;border-top:5px solid var(--gold)}
 .mem.big .mphoto,.mem.big .avatar{width:170px;height:170px;border-width:5px;font-size:4rem;box-shadow:0 10px 26px rgba(8,58,44,.2)}
 .mem.big h3{font-size:1.5rem}.mem.big .role{font-size:1rem;padding:1px 18px}
-.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
 .sub-head{text-align:center;margin:36px 0 16px;font-size:1.5rem;color:var(--deep)}
 @media(max-width:560px){.hero h1{font-size:2.3rem}.hero .logo{height:92px}.brand span{display:none}.post h1{font-size:1.6rem}.clockbar{font-size:.74rem}}
 """
