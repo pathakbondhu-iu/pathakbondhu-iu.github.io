@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#083a2c">
 <title>পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা</title>
 <meta name="description" content="পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা: অরাজনৈতিক, সেবামূলক ও শিক্ষামূলক সামাজিক সংগঠন। দৈনিক আজকের পত্রিকার সহযোগী সংগঠন।">
 <link rel="icon" href="images/pathakbondhu-logo.png">
@@ -10,80 +11,213 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
 <style>
-  :root { --green:#0f6b4f; --dark:#0b3d2e; --gold:#d9a93a; --bg:#f6f8f7; --card:#fff; --text:#1c2a25; --muted:#66756f; --line:#dfe6e3; }
-  * { box-sizing: border-box; }
-  body { margin:0; font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.75; }
-  h1,h2,h3,.brand { font-family:"Tiro Bangla","Hind Siliguri",serif; font-weight:400; }
+  :root {
+    --deep:#083a2c; --green:#0f5c45; --mid:#1d7a5c; --soft:#e6f0ea; --gold:#c99a2e; --gold-l:#f1d98e;
+    --paper:#faf7f0; --card:#ffffff; --ink:#1b2a24; --muted:#63726b; --line:#e4e0d4;
+    --shadow:0 8px 28px rgba(8,58,44,.10);
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; scroll-padding-top:70px; }
+  body { margin:0; font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif; background:var(--paper); color:var(--ink); line-height:1.8; }
+  h1,h2,h3,.serif { font-family:"Tiro Bangla","Hind Siliguri",serif; font-weight:400; }
+  a { color:inherit; }
+  img { max-width:100%; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 18px; }
+  section.block { padding:46px 0 10px; }
+  .sec-head { text-align:center; margin-bottom:26px; }
+  .sec-head h2 { margin:0; font-size:1.9rem; color:var(--deep); }
+  .sec-head .bar { width:64px; height:4px; border-radius:4px; margin:8px auto 0; background:linear-gradient(90deg,var(--gold),var(--gold-l)); }
+  .sec-head p { margin:10px 0 0; color:var(--muted); }
 
-  /* হেডার */
-  header { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fff; padding:28px 16px 30px; text-align:center; position:relative; }
-  header::after { content:""; position:absolute; left:0; right:0; bottom:0; height:4px; background:linear-gradient(90deg,var(--gold),#f3d98a,var(--gold)); }
-  .logo-main { height:110px; width:auto; max-width:80%; display:block; margin:0 auto 10px; filter:drop-shadow(0 4px 10px rgba(0,0,0,.25)); }
-  header h1 { margin:0; font-size:2.3rem; letter-spacing:.5px; }
-  header .branch { margin:2px 0 0; font-size:1.2rem; color:#f3d98a; font-family:"Tiro Bangla",serif; }
-  header .about { margin:10px auto 0; max-width:640px; font-size:1rem; opacity:.92; }
+  /* ওপরের মেনু */
+  .topbar { position:sticky; top:0; z-index:20; background:rgba(8,58,44,.96); backdrop-filter:blur(6px); border-bottom:3px solid var(--gold); }
+  .topbar .wrap { display:flex; align-items:center; justify-content:space-between; gap:12px; height:58px; }
+  .brand { display:flex; align-items:center; gap:10px; color:#fff; text-decoration:none; font-size:1.25rem; white-space:nowrap; }
+  .brand img { height:34px; width:auto; }
+  .menu { display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; }
+  .menu::-webkit-scrollbar { display:none; }
+  .menu button { background:none; border:0; color:#d8ebe2; font:inherit; font-size:.95rem; padding:6px 12px; border-radius:18px; cursor:pointer; white-space:nowrap; }
+  .menu button:hover { background:rgba(255,255,255,.12); color:#fff; }
 
-  /* সহযোগী ও বিশ্ববিদ্যালয়ের লোগো-স্ট্রিপ */
-  .partners { display:flex; justify-content:center; align-items:center; gap:28px; flex-wrap:wrap; margin-top:18px; }
-  .partner { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.3); border-radius:14px; padding:8px 16px; font-size:.9rem; }
-  .partner img { height:44px; width:auto; background:#fff; border-radius:8px; padding:3px; }
+  /* হিরো */
+  .hero { color:#fff; text-align:center; padding:46px 18px 54px; position:relative; overflow:hidden;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(201,154,46,.28), transparent 38%),
+      radial-gradient(circle at 88% 85%, rgba(29,122,92,.55), transparent 42%),
+      linear-gradient(145deg,var(--deep),var(--green)); }
+  .hero::before { content:""; position:absolute; inset:0; opacity:.07;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='46'%3E%3Cpath d='M23 3l20 20-20 20L3 23z' fill='none' stroke='%23fff' stroke-width='1.2'/%3E%3C/svg%3E"); }
+  .hero > * { position:relative; }
+  .hero .logo { height:118px; width:auto; display:block; margin:0 auto 12px; filter:drop-shadow(0 6px 14px rgba(0,0,0,.3)); }
+  .hero h1 { margin:0; font-size:3rem; letter-spacing:.5px; line-height:1.3; }
+  .hero .branch { margin:2px 0 0; font-size:1.3rem; color:var(--gold-l); font-family:"Tiro Bangla",serif; }
+  .hero .tag { margin:12px auto 0; max-width:560px; opacity:.93; }
+  .partners { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-top:22px; }
+  .partner { display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.28); border-radius:16px; padding:8px 16px 8px 10px; font-size:.88rem; line-height:1.4; text-align:left; }
+  .partner img { height:42px; width:auto; background:#fff; border-radius:10px; padding:3px; }
+  .cta { display:inline-block; margin-top:24px; background:var(--gold); color:#2b2106; border:0; border-radius:26px; padding:10px 26px; font:inherit; font-weight:600; cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,.25); }
 
-  nav { position:sticky; top:0; background:#fff; border-bottom:1px solid var(--line); z-index:5; box-shadow:0 2px 8px rgba(0,0,0,.04); }
-  nav .tabs { display:flex; gap:8px; overflow-x:auto; padding:10px 16px; max-width:960px; margin:auto; }
-  nav button { flex:0 0 auto; border:1px solid var(--line); background:#fff; color:var(--text); padding:6px 18px; border-radius:20px; font:inherit; font-weight:500; cursor:pointer; transition:.15s; }
-  nav button:hover { border-color:var(--green); }
-  nav button.active { background:var(--green); color:#fff; border-color:var(--green); }
+  /* আমাদের কথা */
+  .about-text { max-width:760px; margin:0 auto; text-align:center; font-size:1.08rem; }
+  .about-text p { margin:0 0 12px; }
+  .pillars { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:26px; }
+  .pillar { background:var(--card); border:1px solid var(--line); border-top:4px solid var(--gold); border-radius:16px; padding:20px 18px; text-align:center; box-shadow:var(--shadow); }
+  .pillar .ic { font-size:2rem; }
+  .pillar h3 { margin:6px 0 4px; font-size:1.3rem; color:var(--green); }
+  .pillar p { margin:0; color:var(--muted); font-size:.95rem; }
 
-  main { max-width:960px; margin:22px auto; padding:0 16px; }
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column; transition:.2s; }
-  .card:hover { transform:translateY(-3px); box-shadow:0 10px 24px rgba(15,107,79,.12); }
-  .card img { width:100%; height:180px; object-fit:cover; display:block; background:#e8eeeb; }
-  .card .body { padding:14px 16px 16px; }
-  .tag { display:inline-block; font-size:.78rem; font-weight:600; background:#e3f2ec; color:var(--green); padding:1px 11px; border-radius:12px; }
+  /* সাম্প্রতিক পোস্ট স্লাইডার */
+  .carousel { position:relative; }
+  .track { display:flex; gap:16px; overflow-x:auto; scroll-snap-type:x mandatory; padding:6px 4px 18px; scrollbar-width:none; }
+  .track::-webkit-scrollbar { display:none; }
+  .slide { flex:0 0 min(330px,82%); scroll-snap-align:start; }
+  .arrow { position:absolute; top:42%; z-index:2; width:42px; height:42px; border-radius:50%; border:0; background:var(--deep); color:#fff; font-size:1.5rem; line-height:1; cursor:pointer; box-shadow:0 4px 14px rgba(0,0,0,.28); }
+  .arrow:hover { background:var(--mid); }
+  .arrow.prev { left:-8px; } .arrow.next { right:-8px; }
+  @media (max-width:640px) { .arrow { display:none; } }
+
+  /* পোস্ট কার্ড */
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; display:flex; flex-direction:column; height:100%; transition:transform .2s, box-shadow .2s; }
+  .card:hover { transform:translateY(-4px); box-shadow:var(--shadow); }
+  .card .pic { width:100%; height:190px; object-fit:cover; display:block; background:var(--soft); }
+  .card .ph { height:190px; display:flex; align-items:center; justify-content:center; font-size:3.2rem; background:linear-gradient(135deg,var(--soft),#fff3d6); }
+  .card .body { padding:14px 16px 16px; display:flex; flex-direction:column; flex:1; }
+  .chip { display:inline-block; font-size:.78rem; font-weight:600; background:var(--soft); color:var(--green); padding:1px 11px; border-radius:12px; }
   .date { font-size:.8rem; color:var(--muted); margin-left:6px; }
-  .card h3 { margin:8px 0 4px; font-size:1.15rem; line-height:1.5; }
+  .card h3 { margin:8px 0 4px; font-size:1.18rem; line-height:1.5; color:var(--deep); }
   .card p { margin:0; color:var(--muted); font-size:.94rem; white-space:pre-line; }
-  .card a.more { display:inline-block; margin-top:8px; color:var(--green); font-weight:600; cursor:pointer; font-size:.92rem; }
-  .empty { text-align:center; color:var(--muted); padding:40px 0; }
+  .card .more { margin-top:auto; padding-top:10px; color:var(--green); font-weight:600; cursor:pointer; font-size:.92rem; background:none; border:0; text-align:left; font-family:inherit; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:18px; }
+  .empty { text-align:center; color:var(--muted); padding:34px 0; grid-column:1/-1; }
 
-  /* ফুটার */
-  footer { background:var(--dark); color:#cfe3da; text-align:center; font-size:.9rem; padding:28px 16px 34px; margin-top:30px; }
-  footer .flogos { display:flex; justify-content:center; align-items:center; gap:18px; margin-bottom:12px; flex-wrap:wrap; }
-  footer .flogos img { height:48px; width:auto; background:#fff; border-radius:8px; padding:4px; }
-  footer a { color:var(--gold); font-weight:600; }
+  /* ক্যাটাগরি কার্ড */
+  .cats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; }
+  .catcard { text-decoration:none; background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px 12px 16px; text-align:center; position:relative; overflow:hidden; transition:transform .2s, box-shadow .2s, border-color .2s; }
+  .catcard::before { content:""; position:absolute; left:0; right:0; top:0; height:5px; background:var(--c,var(--green)); }
+  .catcard:hover { transform:translateY(-4px); box-shadow:var(--shadow); border-color:var(--c,var(--green)); }
+  .catcard .ico { width:58px; height:58px; margin:0 auto 8px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.7rem; background:color-mix(in srgb, var(--c,var(--green)) 14%, white); }
+  .catcard .nm { font-size:1.15rem; color:var(--deep); font-family:"Tiro Bangla",serif; }
+  .catcard .ct { font-size:.82rem; color:var(--muted); }
+  .catcard.all { --c:var(--deep); }
 
-  #modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:flex-start; justify-content:center; overflow:auto; padding:20px 12px; z-index:10; }
+  /* ক্যাটাগরি পাতা */
+  .catpage-head { display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:34px 0 20px; }
+  .back { background:var(--deep); color:#fff; border:0; border-radius:20px; padding:7px 18px; font:inherit; cursor:pointer; }
+  .catpage-head h2 { margin:0; font-size:2rem; color:var(--deep); }
+  .catpage-head .n { color:var(--muted); }
+  .pills { display:flex; gap:8px; overflow-x:auto; padding-bottom:14px; scrollbar-width:none; }
+  .pills::-webkit-scrollbar { display:none; }
+  .pills a { flex:0 0 auto; text-decoration:none; border:1px solid var(--line); background:#fff; padding:5px 16px; border-radius:20px; font-size:.92rem; }
+  .pills a.on { background:var(--green); color:#fff; border-color:var(--green); }
+
+  /* যোগাযোগ */
+  .contact { background:linear-gradient(145deg,var(--deep),var(--green)); color:#fff; border-radius:22px; padding:34px 20px; text-align:center; box-shadow:var(--shadow); }
+  .contact h3 { margin:0 0 6px; font-size:1.6rem; color:var(--gold-l); }
+  .contact p { margin:0 0 16px; opacity:.92; }
+  .contact .row { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
+  .contact a.btn { text-decoration:none; background:#fff; color:var(--deep); padding:10px 22px; border-radius:26px; font-weight:600; }
+  .contact a.btn.alt { background:transparent; color:#fff; border:1px solid rgba(255,255,255,.55); }
+  .contact .mail { margin-top:14px; font-size:1.05rem; word-break:break-all; }
+  .contact .mail a { color:var(--gold-l); }
+
+  footer { background:var(--deep); color:#bcd8cc; text-align:center; font-size:.9rem; padding:30px 16px 36px; margin-top:46px; border-top:4px solid var(--gold); }
+  footer .flogos { display:flex; justify-content:center; align-items:center; gap:16px; margin-bottom:12px; flex-wrap:wrap; }
+  footer .flogos img { height:46px; width:auto; background:#fff; border-radius:10px; padding:4px; }
+  footer a { color:var(--gold-l); }
+
+  #modal { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:flex-start; justify-content:center; overflow:auto; padding:20px 12px; z-index:50; }
   #modal.open { display:flex; }
-  #modal .box { background:#fff; max-width:680px; width:100%; border-radius:14px; padding:18px; }
-  #modal img { width:100%; border-radius:8px; margin:8px 0; }
+  #modal .box { background:#fff; max-width:700px; width:100%; border-radius:18px; padding:20px; }
+  #modal h2 { margin:8px 0; color:var(--deep); }
+  #modal img { width:100%; border-radius:10px; margin:8px 0; }
   #modal .text { white-space:pre-line; }
-  #modal button.close { float:right; border:0; background:#eee; border-radius:8px; padding:4px 12px; font:inherit; cursor:pointer; }
-  @media (max-width:520px) { header h1 { font-size:1.9rem; } .logo-main { height:90px; } }
+  #modal button.close { float:right; border:0; background:#eee; border-radius:10px; padding:5px 14px; font:inherit; cursor:pointer; }
+  #modal a.fb { display:inline-block; margin-top:8px; color:var(--green); font-weight:600; }
+  [hidden] { display:none !important; }
+  @media (max-width:560px) { .hero h1 { font-size:2.3rem; } .hero .logo { height:92px; } .brand span { display:none; } }
 </style>
 </head>
 <body>
-<header>
-  <img class="logo-main" src="images/pathakbondhu-logo.png" alt="পাঠকবন্ধু লোগো" onerror="this.style.display='none'">
-  <h1>পাঠকবন্ধু</h1>
-  <p class="branch">ইসলামী বিশ্ববিদ্যালয় শাখা</p>
-  <p class="about">অরাজনৈতিক, সেবামূলক ও শিক্ষামূলক সামাজিক সংগঠন</p>
-  <div class="partners">
-    <div class="partner">
-      <img src="images/iu-logo.png" alt="ইসলামী বিশ্ববিদ্যালয় লোগো" onerror="this.style.display='none'">
-      <span>ইসলামী বিশ্ববিদ্যালয়</span>
+
+<div class="topbar"><div class="wrap">
+  <a class="brand serif" href="#" onclick="goTo('top');return false;">
+    <img src="images/pathakbondhu-logo.png" alt="" onerror="this.style.display='none'"><span>পাঠকবন্ধু</span>
+  </a>
+  <nav class="menu">
+    <button onclick="goTo('top')">হোম</button>
+    <button onclick="goTo('about')">আমাদের কথা</button>
+    <button onclick="goTo('recent')">সাম্প্রতিক</button>
+    <button onclick="goTo('categories')">ক্যাটাগরি</button>
+    <button onclick="goTo('contact')">যোগাযোগ</button>
+  </nav>
+</div></div>
+
+<div id="homeView">
+  <header class="hero" id="top">
+    <img class="logo" src="images/pathakbondhu-logo.png" alt="পাঠকবন্ধু লোগো" onerror="this.style.display='none'">
+    <h1>পাঠকবন্ধু</h1>
+    <p class="branch">ইসলামী বিশ্ববিদ্যালয় শাখা</p>
+    <p class="tag">অরাজনৈতিক, সেবামূলক ও শিক্ষামূলক সামাজিক সংগঠন</p>
+    <div class="partners">
+      <div class="partner">
+        <img src="images/iu-logo.png" alt="ইসলামী বিশ্ববিদ্যালয় লোগো" onerror="this.style.display='none'">
+        <span>ইসলামী বিশ্ববিদ্যালয়</span>
+      </div>
+      <div class="partner">
+        <img src="images/ajkerpatrika-logo.png" alt="দৈনিক আজকের পত্রিকা লোগো" onerror="this.style.display='none'">
+        <span>দৈনিক আজকের পত্রিকার<br>সহযোগী সংগঠন</span>
+      </div>
     </div>
-    <div class="partner">
-      <img src="images/ajkerpatrika-logo.png" alt="দৈনিক আজকের পত্রিকা লোগো" onerror="this.style.display='none'">
-      <span>দৈনিক আজকের পত্রিকার<br>সহযোগী সংগঠন</span>
-    </div>
+    <button class="cta" onclick="goTo('recent')">সাম্প্রতিক পোস্ট দেখুন</button>
+  </header>
+
+  <div class="wrap">
+    <section class="block" id="about">
+      <div class="sec-head"><h2>আমাদের কথা</h2><div class="bar"></div></div>
+      <div class="about-text" id="aboutText"></div>
+      <div class="pillars" id="pillars"></div>
+    </section>
+
+    <section class="block" id="recent">
+      <div class="sec-head"><h2>সাম্প্রতিক পোস্ট</h2><div class="bar"></div><p>আমাদের সর্বশেষ কার্যক্রম</p></div>
+      <div class="carousel">
+        <button class="arrow prev" id="prev" aria-label="আগেরটি">‹</button>
+        <div class="track" id="track"></div>
+        <button class="arrow next" id="next" aria-label="পরেরটি">›</button>
+      </div>
+    </section>
+
+    <section class="block" id="categories">
+      <div class="sec-head"><h2>ক্যাটাগরি অনুযায়ী দেখুন</h2><div class="bar"></div><p>আপনার পছন্দের বিষয়ে ক্লিক করুন</p></div>
+      <div class="cats" id="cats"></div>
+    </section>
+
+    <section class="block" id="contact">
+      <div class="sec-head"><h2>যোগাযোগ</h2><div class="bar"></div></div>
+      <div class="contact">
+        <h3>আমাদের সাথে যোগাযোগ করুন</h3>
+        <p>যেকোনো প্রশ্ন, পরামর্শ বা সহযোগিতার জন্য লিখুন।</p>
+        <div class="row">
+          <a class="btn" id="mailBtn" href="#">ইমেইল পাঠান</a>
+          <a class="btn alt" id="fbBtn" href="#" target="_blank" rel="noopener">ফেসবুক পেইজ</a>
+        </div>
+        <div class="mail">ইমেইল: <a id="mailText" href="#"></a></div>
+      </div>
+    </section>
   </div>
-</header>
-<nav><div class="tabs" id="tabs"></div></nav>
-<main>
-  <div class="grid" id="list"></div>
-  <div class="empty" id="empty" style="display:none">এই ক্যাটাগরিতে এখনো কোনো পোস্ট নেই।</div>
-</main>
+</div>
+
+<div id="catView" hidden>
+  <div class="wrap">
+    <div class="catpage-head">
+      <button class="back" onclick="goHomeSection('categories')">← সব ক্যাটাগরি</button>
+      <h2 id="catTitle"></h2><span class="n" id="catCount"></span>
+    </div>
+    <div class="pills" id="pills"></div>
+    <div class="grid" id="catGrid"></div>
+  </div>
+</div>
+
 <footer>
   <div class="flogos">
     <img src="images/pathakbondhu-logo.png" alt="" onerror="this.style.display='none'">
@@ -92,19 +226,40 @@
   </div>
   &copy; পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা<br>
   দৈনিক আজকের পত্রিকার সহযোগী সংগঠন<br>
-  <a id="fblink" href="#" target="_blank" rel="noopener">আমাদের ফেসবুক পেইজ</a>
+  <a id="footMail" href="#"></a> &nbsp;|&nbsp; <a id="footFb" href="#" target="_blank" rel="noopener">ফেসবুক পেইজ</a>
 </footer>
 <div id="modal"><div class="box" id="modalBox"></div></div>
 
 <script>
-// ===== সেটিংস =====
-var FACEBOOK_PAGE_URL = "https://www.facebook.com/pathakbondhu.iu";
-var CATEGORIES = ["সব","খবর","ইভেন্ট","ঘোষণা","সেবামূলক কাজ","শিক্ষামূলক","গ্যালারি","সাধারণ"];
-// ==================
+// ================= সেটিংস (এখানকার লেখা নিজের মতো বদলাতে পারবেন) =================
+var SITE = {
+  email: "pathakbondhu.iu@gmail.com",
+  facebook: "https://www.facebook.com/pathakbondhu.iu",
+  about: [
+    "পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা একটি অরাজনৈতিক, সেবামূলক ও শিক্ষামূলক সামাজিক সংগঠন। জ্ঞানচর্চা ও মানবসেবার মাধ্যমে সমাজের পাশে থাকাই আমাদের লক্ষ্য।",
+    "দৈনিক আজকের পত্রিকার সহযোগী সংগঠন হিসেবে আমরা শিক্ষার্থী ও সমাজের মানুষের জন্য কাজ করার চেষ্টা করি।"
+  ],
+  pillars: [
+    { icon: "🕊️", title: "অরাজনৈতিক", text: "কোনো রাজনৈতিক দল বা মতের সাথে আমাদের সম্পৃক্ততা নেই।" },
+    { icon: "🤝", title: "সেবামূলক", text: "মানুষের কল্যাণে সেবামূলক কাজে অংশগ্রহণ।" },
+    { icon: "📚", title: "শিক্ষামূলক", text: "শিক্ষা ও জ্ঞানচর্চার প্রসারে কার্যক্রম।" }
+  ]
+};
+// ক্যাটাগরির নাম sync স্ক্রিপ্ট ও Pages CMS-এর সাথে মিল থাকতে হবে
+var CATEGORIES = [
+  { name: "খবর",          icon: "📰", color: "#2f6fb0" },
+  { name: "ইভেন্ট",       icon: "🎉", color: "#c2581f" },
+  { name: "ঘোষণা",        icon: "📢", color: "#b8860b" },
+  { name: "সেবামূলক কাজ", icon: "🤝", color: "#0f7b5c" },
+  { name: "শিক্ষামূলক",   icon: "📚", color: "#6b3fa0" },
+  { name: "গ্যালারি",     icon: "🖼️", color: "#b23a6d" },
+  { name: "সাধারণ",       icon: "📌", color: "#5b6b66" }
+];
+var RECENT_COUNT = 8;
+// ==============================================================================
 
-document.getElementById("fblink").href = FACEBOOK_PAGE_URL;
 var posts = [];
-var current = decodeURIComponent(location.hash.slice(1)) || "সব";
+var inCat = false;
 
 function el(tag, cls, text) {
   var e = document.createElement(tag);
@@ -112,73 +267,209 @@ function el(tag, cls, text) {
   if (text !== undefined) e.textContent = text;
   return e;
 }
+function $(id) { return document.getElementById(id); }
 function fmtDate(s) {
   var d = new Date(s);
   if (isNaN(d)) return "";
   return d.toLocaleDateString("bn-BD", { year:"numeric", month:"long", day:"numeric" });
 }
 function safeUrl(u) { return /^(https?:\/\/|\/|\.\/|images\/)/.test(u || "") ? u : ""; }
-
-function renderTabs() {
-  var box = document.getElementById("tabs");
-  box.textContent = "";
-  CATEGORIES.forEach(function (c) {
-    var b = el("button", c === current ? "active" : "", c);
-    b.onclick = function () { current = c; location.hash = encodeURIComponent(c); render(); };
-    box.appendChild(b);
-  });
+function catInfo(name) {
+  for (var i = 0; i < CATEGORIES.length; i++) if (CATEGORIES[i].name === name) return CATEGORIES[i];
+  return { name: name, icon: "📌", color: "#5b6b66" };
 }
-function render() {
-  renderTabs();
-  var list = document.getElementById("list");
-  list.textContent = "";
-  var shown = posts.filter(function (p) { return current === "সব" || p.category === current; });
-  document.getElementById("empty").style.display = shown.length ? "none" : "block";
-  shown.forEach(function (p) {
-    var card = el("div", "card");
-    var img = safeUrl((p.images || [])[0]);
-    if (img) { var i = el("img"); i.src = img; i.alt = p.title || ""; i.loading = "lazy"; card.appendChild(i); }
-    var body = el("div", "body");
-    body.appendChild(el("span", "tag", p.category || "সাধারণ"));
-    body.appendChild(el("span", "date", fmtDate(p.date)));
-    body.appendChild(el("h3", "", p.title || ""));
-    var t = p.text || "";
-    body.appendChild(el("p", "", t.length > 140 ? t.slice(0, 140) + "…" : t));
-    var more = el("a", "more", "বিস্তারিত পড়ুন");
-    more.onclick = function () { openPost(p); };
-    body.appendChild(more);
-    card.appendChild(body);
-    list.appendChild(card);
-  });
+function countOf(name) {
+  return posts.filter(function (p) { return (p.category || "সাধারণ") === name; }).length;
+}
+function bn(n) { return Number(n).toLocaleString("bn-BD"); }
+
+// ---------- পোস্ট কার্ড ও বিস্তারিত ----------
+function makeCard(p) {
+  var card = el("div", "card");
+  var img = safeUrl((p.images || [])[0]);
+  if (img) {
+    var i = el("img", "pic"); i.src = img; i.alt = p.title || ""; i.loading = "lazy";
+    i.onerror = function () { var ph = el("div", "ph", catInfo(p.category).icon); i.replaceWith(ph); };
+    card.appendChild(i);
+  } else {
+    card.appendChild(el("div", "ph", catInfo(p.category).icon));
+  }
+  var body = el("div", "body");
+  var top = el("div");
+  top.appendChild(el("span", "chip", p.category || "সাধারণ"));
+  top.appendChild(el("span", "date", fmtDate(p.date)));
+  body.appendChild(top);
+  body.appendChild(el("h3", "", p.title || ""));
+  var t = p.text || "";
+  body.appendChild(el("p", "", t.length > 120 ? t.slice(0, 120) + "…" : t));
+  var more = el("button", "more", "বিস্তারিত পড়ুন →");
+  more.onclick = function () { openPost(p); };
+  body.appendChild(more);
+  card.appendChild(body);
+  return card;
 }
 function openPost(p) {
-  var box = document.getElementById("modalBox");
+  var box = $("modalBox");
   box.textContent = "";
   var c = el("button", "close", "বন্ধ করুন");
   c.onclick = closeModal;
   box.appendChild(c);
-  box.appendChild(el("span", "tag", p.category || "সাধারণ"));
+  box.appendChild(el("span", "chip", p.category || "সাধারণ"));
   box.appendChild(el("span", "date", fmtDate(p.date)));
-  box.appendChild(el("h2", "", p.title || ""));
+  box.appendChild(el("h2", "serif", p.title || ""));
   box.appendChild(el("div", "text", p.text || ""));
   (p.images || []).forEach(function (u) {
     u = safeUrl(u);
     if (u) { var i = el("img"); i.src = u; i.loading = "lazy"; box.appendChild(i); }
   });
   var fb = safeUrl(p.fb_url);
-  if (fb) { var a = el("a", "", "ফেসবুকে দেখুন"); a.href = fb; a.target = "_blank"; a.rel = "noopener"; box.appendChild(a); }
-  document.getElementById("modal").classList.add("open");
+  if (fb) { var a = el("a", "fb", "ফেসবুকে দেখুন →"); a.href = fb; a.target = "_blank"; a.rel = "noopener"; box.appendChild(a); }
+  $("modal").classList.add("open");
 }
-function closeModal() { document.getElementById("modal").classList.remove("open"); }
-document.getElementById("modal").onclick = function (e) { if (e.target.id === "modal") closeModal(); };
+function closeModal() { $("modal").classList.remove("open"); }
+$("modal").onclick = function (e) { if (e.target.id === "modal") closeModal(); };
+document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
 
+// ---------- হোম ----------
+function renderAbout() {
+  var box = $("aboutText"); box.textContent = "";
+  SITE.about.forEach(function (t) { box.appendChild(el("p", "", t)); });
+  var pl = $("pillars"); pl.textContent = "";
+  SITE.pillars.forEach(function (x) {
+    var d = el("div", "pillar");
+    d.appendChild(el("div", "ic", x.icon));
+    d.appendChild(el("h3", "", x.title));
+    d.appendChild(el("p", "", x.text));
+    pl.appendChild(d);
+  });
+}
+function renderRecent() {
+  var track = $("track"); track.textContent = "";
+  var list = posts.slice(0, RECENT_COUNT);
+  if (!list.length) { track.appendChild(el("div", "empty", "শীঘ্রই নতুন পোস্ট আসছে।")); return; }
+  list.forEach(function (p) {
+    var s = el("div", "slide"); s.appendChild(makeCard(p)); track.appendChild(s);
+  });
+}
+function renderCats() {
+  var box = $("cats"); box.textContent = "";
+  var all = el("a", "catcard all"); all.href = "#/cat/" + encodeURIComponent("সব");
+  var ai = el("div", "ico", "🗂️"); all.appendChild(ai);
+  all.appendChild(el("div", "nm", "সব পোস্ট"));
+  all.appendChild(el("div", "ct", bn(posts.length) + "টি পোস্ট"));
+  box.appendChild(all);
+  CATEGORIES.forEach(function (c) {
+    var a = el("a", "catcard"); a.href = "#/cat/" + encodeURIComponent(c.name);
+    a.style.setProperty("--c", c.color);
+    a.appendChild(el("div", "ico", c.icon));
+    a.appendChild(el("div", "nm", c.name));
+    a.appendChild(el("div", "ct", bn(countOf(c.name)) + "টি পোস্ট"));
+    box.appendChild(a);
+  });
+}
+
+// ---------- ক্যাটাগরি পাতা ----------
+function showCategory(name) {
+  inCat = true;
+  $("homeView").hidden = true; $("catView").hidden = false;
+  var isAll = name === "সব";
+  var info = isAll ? { icon: "🗂️" } : catInfo(name);
+  var list = posts.filter(function (p) { return isAll || (p.category || "সাধারণ") === name; });
+  $("catTitle").textContent = info.icon + " " + (isAll ? "সব পোস্ট" : name);
+  $("catCount").textContent = "(" + bn(list.length) + "টি পোস্ট)";
+  var pills = $("pills"); pills.textContent = "";
+  [{ name: "সব", label: "সব" }].concat(CATEGORIES.map(function (c) { return { name: c.name, label: c.name }; }))
+    .forEach(function (c) {
+      var a = el("a", c.name === name ? "on" : "", c.label);
+      a.href = "#/cat/" + encodeURIComponent(c.name);
+      pills.appendChild(a);
+    });
+  var grid = $("catGrid"); grid.textContent = "";
+  if (!list.length) grid.appendChild(el("div", "empty", "এই ক্যাটাগরিতে এখনো কোনো পোস্ট নেই।"));
+  list.forEach(function (p) { grid.appendChild(makeCard(p)); });
+  stopAuto();
+  window.scrollTo(0, 0);
+}
+function showHome() {
+  inCat = false;
+  $("homeView").hidden = false; $("catView").hidden = true;
+  startAuto();
+}
+function route() {
+  var h = location.hash || "";
+  if (h.indexOf("#/cat/") === 0) {
+    var name = "সব";
+    try { name = decodeURIComponent(h.slice(6)) || "সব"; } catch (e) {}
+    showCategory(name);
+  } else {
+    showHome();
+  }
+}
+window.addEventListener("hashchange", route);
+
+function scrollToId(id) {
+  var e = $(id);
+  if (!e) return;
+  if (id === "top") window.scrollTo({ top: 0, behavior: "smooth" });
+  else e.scrollIntoView({ behavior: "smooth" });
+}
+function goTo(id) {
+  if (inCat) { history.pushState(null, "", location.pathname + location.search); showHome(); setTimeout(function () { scrollToId(id); }, 60); }
+  else scrollToId(id);
+}
+function goHomeSection(id) { goTo(id); }
+
+// ---------- স্লাইডার (নিজে নিজে ডান দিকে এগোয়) ----------
+var timer = null, resumeT = null;
+var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+function step(dir) {
+  var t = $("track"), first = t.firstElementChild;
+  if (!first || !first.offsetWidth) return;
+  var w = first.offsetWidth + 16;
+  if (dir > 0) {
+    if (t.scrollLeft + t.clientWidth >= t.scrollWidth - 8) t.scrollTo({ left: 0, behavior: "smooth" });
+    else t.scrollBy({ left: w, behavior: "smooth" });
+  } else {
+    if (t.scrollLeft <= 8) t.scrollTo({ left: t.scrollWidth, behavior: "smooth" });
+    else t.scrollBy({ left: -w, behavior: "smooth" });
+  }
+}
+function stopAuto() { clearInterval(timer); timer = null; clearTimeout(resumeT); }
+function startAuto() {
+  stopAuto();
+  if (reduce || inCat || posts.length < 2) return;
+  timer = setInterval(function () { step(1); }, 4500);
+}
+(function bindCarousel() {
+  var t = $("track");
+  t.addEventListener("mouseenter", stopAuto);
+  t.addEventListener("mouseleave", startAuto);
+  t.addEventListener("touchstart", stopAuto, { passive: true });
+  t.addEventListener("touchend", function () { clearTimeout(resumeT); resumeT = setTimeout(startAuto, 6000); }, { passive: true });
+  $("prev").onclick = function () { step(-1); startAuto(); };
+  $("next").onclick = function () { step(1); startAuto(); };
+})();
+
+// ---------- যোগাযোগ ও ফুটার ----------
+function setupContact() {
+  var m = "mailto:" + SITE.email;
+  $("mailBtn").href = m; $("mailText").href = m; $("mailText").textContent = SITE.email;
+  $("footMail").href = m; $("footMail").textContent = SITE.email;
+  $("fbBtn").href = SITE.facebook; $("footFb").href = SITE.facebook;
+}
+
+// ---------- শুরু ----------
+function init() {
+  setupContact(); renderAbout(); renderRecent(); renderCats(); route();
+}
+init();
 fetch("data/posts.json")
   .then(function (r) { return r.json(); })
   .then(function (d) {
     posts = d.sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
-    render();
+    renderRecent(); renderCats(); route();
   })
-  .catch(function () { render(); });
+  .catch(function () {});
 </script>
 </body>
 </html>
