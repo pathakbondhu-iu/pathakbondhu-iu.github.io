@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা</title>
+<meta name="description" content="পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা: অরাজনৈতিক, সেবামূলক ও শিক্ষামূলক সামাজিক সংগঠন। দৈনিক আজকের পত্রিকার সহযোগী সংগঠন।">
+<style>
+  :root { --green:#0f6b4f; --dark:#0b3d2e; --bg:#f6f8f7; --card:#fff; --text:#1c2a25; --muted:#66756f; --line:#dfe6e3; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: "Noto Sans Bengali","Kalpurush","SolaimanLipi",system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.7; }
+  header { background:linear-gradient(135deg,var(--dark),var(--green)); color:#fff; padding:36px 16px 28px; text-align:center; }
+  header h1 { margin:0; font-size:2rem; }
+  header .branch { margin:4px 0 0; font-size:1.1rem; opacity:.95; }
+  header .about { margin:12px auto 0; max-width:640px; font-size:.95rem; opacity:.9; }
+  header .partner { display:inline-block; margin-top:14px; padding:4px 14px; border:1px solid rgba(255,255,255,.5); border-radius:20px; font-size:.85rem; }
+  nav { position:sticky; top:0; background:#fff; border-bottom:1px solid var(--line); z-index:5; }
+  nav .tabs { display:flex; gap:8px; overflow-x:auto; padding:10px 16px; max-width:960px; margin:auto; }
+  nav button { flex:0 0 auto; border:1px solid var(--line); background:#fff; color:var(--text); padding:6px 16px; border-radius:20px; font:inherit; cursor:pointer; }
+  nav button.active { background:var(--green); color:#fff; border-color:var(--green); }
+  main { max-width:960px; margin:20px auto; padding:0 16px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
+  .card img { width:100%; height:180px; object-fit:cover; display:block; background:#e8eeeb; }
+  .card .body { padding:14px; }
+  .tag { display:inline-block; font-size:.78rem; background:#e3f2ec; color:var(--green); padding:1px 10px; border-radius:12px; }
+  .date { font-size:.8rem; color:var(--muted); margin-left:6px; }
+  .card h3 { margin:8px 0 4px; font-size:1.05rem; }
+  .card p { margin:0; color:var(--muted); font-size:.92rem; white-space:pre-line; }
+  .card a.more { display:inline-block; margin-top:8px; color:var(--green); cursor:pointer; font-size:.9rem; text-decoration:underline; }
+  .empty { text-align:center; color:var(--muted); padding:40px 0; }
+  footer { text-align:center; color:var(--muted); font-size:.85rem; padding:28px 16px 40px; }
+  footer a { color:var(--green); }
+  #modal { position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; align-items:flex-start; justify-content:center; overflow:auto; padding:20px 12px; z-index:10; }
+  #modal.open { display:flex; }
+  #modal .box { background:#fff; max-width:680px; width:100%; border-radius:12px; padding:18px; }
+  #modal img { width:100%; border-radius:8px; margin:8px 0; }
+  #modal .text { white-space:pre-line; }
+  #modal button.close { float:right; border:0; background:#eee; border-radius:8px; padding:4px 12px; font:inherit; cursor:pointer; }
+</style>
+</head>
+<body>
+<header>
+  <h1>পাঠকবন্ধু</h1>
+  <p class="branch">ইসলামী বিশ্ববিদ্যালয় শাখা</p>
+  <p class="about">অরাজনৈতিক, সেবামূলক ও শিক্ষামূলক সামাজিক সংগঠন</p>
+  <span class="partner">দৈনিক আজকের পত্রিকার সহযোগী সংগঠন</span>
+</header>
+<nav><div class="tabs" id="tabs"></div></nav>
+<main>
+  <div class="grid" id="list"></div>
+  <div class="empty" id="empty" style="display:none">এই ক্যাটাগরিতে এখনো কোনো পোস্ট নেই।</div>
+</main>
+<footer>
+  &copy; পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা<br>
+  <a id="fblink" href="#" target="_blank" rel="noopener">আমাদের ফেসবুক পেইজ</a>
+</footer>
+<div id="modal"><div class="box" id="modalBox"></div></div>
+
+<script>
+// ===== সেটিংস: এখানে শুধু ফেসবুক পেইজের লিংক বদলাবেন =====
+var FACEBOOK_PAGE_URL = "https://www.facebook.com/";
+// ক্যাটাগরির তালিকা (sync স্ক্রিপ্টের ক্যাটাগরির নামের সাথে মিল থাকতে হবে)
+var CATEGORIES = ["সব","খবর","ইভেন্ট","ঘোষণা","সেবামূলক কাজ","শিক্ষামূলক","গ্যালারি","সাধারণ"];
+// ================================================================
+
+document.getElementById("fblink").href = FACEBOOK_PAGE_URL;
+var posts = [];
+var current = decodeURIComponent(location.hash.slice(1)) || "সব";
+
+function el(tag, cls, text) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function fmtDate(s) {
+  var d = new Date(s);
+  if (isNaN(d)) return "";
+  return d.toLocaleDateString("bn-BD", { year:"numeric", month:"long", day:"numeric" });
+}
+function safeUrl(u) { return /^(https?:\/\/|\/|\.\/|images\/)/.test(u || "") ? u : ""; }
+
+function renderTabs() {
+  var box = document.getElementById("tabs");
+  box.textContent = "";
+  CATEGORIES.forEach(function (c) {
+    var b = el("button", c === current ? "active" : "", c);
+    b.onclick = function () { current = c; location.hash = encodeURIComponent(c); render(); };
+    box.appendChild(b);
+  });
+}
+function render() {
+  renderTabs();
+  var list = document.getElementById("list");
+  list.textContent = "";
+  var shown = posts.filter(function (p) { return current === "সব" || p.category === current; });
+  document.getElementById("empty").style.display = shown.length ? "none" : "block";
+  shown.forEach(function (p) {
+    var card = el("div", "card");
+    var img = safeUrl((p.images || [])[0]);
+    if (img) { var i = el("img"); i.src = img; i.alt = p.title || ""; i.loading = "lazy"; card.appendChild(i); }
+    var body = el("div", "body");
+    body.appendChild(el("span", "tag", p.category || "সাধারণ"));
+    body.appendChild(el("span", "date", fmtDate(p.date)));
+    body.appendChild(el("h3", "", p.title || ""));
+    var t = p.text || "";
+    body.appendChild(el("p", "", t.length > 140 ? t.slice(0, 140) + "…" : t));
+    var more = el("a", "more", "বিস্তারিত পড়ুন");
+    more.onclick = function () { openPost(p); };
+    body.appendChild(more);
+    card.appendChild(body);
+    list.appendChild(card);
+  });
+}
+function openPost(p) {
+  var box = document.getElementById("modalBox");
+  box.textContent = "";
+  var c = el("button", "close", "বন্ধ করুন");
+  c.onclick = closeModal;
+  box.appendChild(c);
+  box.appendChild(el("span", "tag", p.category || "সাধারণ"));
+  box.appendChild(el("span", "date", fmtDate(p.date)));
+  box.appendChild(el("h2", "", p.title || ""));
+  box.appendChild(el("div", "text", p.text || ""));
+  (p.images || []).forEach(function (u) {
+    u = safeUrl(u);
+    if (u) { var i = el("img"); i.src = u; i.loading = "lazy"; box.appendChild(i); }
+  });
+  var fb = safeUrl(p.fb_url);
+  if (fb) { var a = el("a", "", "ফেসবুকে দেখুন"); a.href = fb; a.target = "_blank"; a.rel = "noopener"; box.appendChild(a); }
+  document.getElementById("modal").classList.add("open");
+}
+function closeModal() { document.getElementById("modal").classList.remove("open"); }
+document.getElementById("modal").onclick = function (e) { if (e.target.id === "modal") closeModal(); };
+
+fetch("data/posts.json")
+  .then(function (r) { return r.json(); })
+  .then(function (d) {
+    posts = d.sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
+    render();
+  })
+  .catch(function () { render(); });
+</script>
+</body>
+</html>
