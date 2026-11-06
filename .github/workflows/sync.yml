@@ -2,13 +2,15 @@ name: Facebook Sync and Build
 
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:
   push:
     branches: [main]
     paths:
       - "data/posts.json"
+      - "data/committee.json"
       - "site.json"
+      - "images/**"
       - "scripts/build.py"
 
 permissions:
