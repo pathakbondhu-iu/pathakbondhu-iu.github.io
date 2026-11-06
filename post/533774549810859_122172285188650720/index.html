@@ -16,12 +16,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/style.css?v=f173db03">
+<link rel="stylesheet" href="/assets/style.css?v=fd4a4cda">
 </head>
 <body>
-<div class="topbar"><div class="wrap">
+<div class="topbar">
+<div class="clockbar"><div class="wrap"><span id="clkDate"></span><b id="clkTime"></b></div></div>
+<div class="wrap main-row">
   <a class="brand serif" href="/"><img src="/images/pathakbondhu-logo.png" alt="" onerror="this.style.display='none'"><span>পাঠকবন্ধু</span></a>
-  <nav class="menu"><a href="/">হোম</a><a href="/about/">আমাদের কথা</a><a href="/posts/" class="on">সব পোস্ট</a><a href="/category/">ক্যাটাগরি</a><a href="/contact/">যোগাযোগ</a></nav>
+  <nav class="menu"><a href="/">হোম</a><a href="/about/">আমাদের কথা</a><a href="/committee/">কমিটি</a><a href="/posts/" class="on">সব পোস্ট</a><a href="/category/">ক্যাটাগরি</a><a href="/contact/">যোগাযোগ</a></nav>
 </div></div>
 <div class="wrap narrow"><nav class="crumbs"><a href="/">হোম</a> › <a href="/posts/">সব পোস্ট</a> › <a href="/category/gallery/">গ্যালারি</a></nav><article class="post"><div><a class="chip" href="/category/gallery/">গ্যালারি</a><span class="date">২৯ জুন, ২০২৬</span></div><h1 class="serif">ফটো পোস্ট</h1><div class="ptext"></div><div class="gallery"><a href="/images/posts/533774549810859_122172285188650720_1.jpg" target="_blank" rel="noopener"><img src="/images/posts/533774549810859_122172285188650720_1.jpg" alt="" loading="lazy" onerror="this.parentNode.style.display='none'"></a></div><a class="fblink" href="https://www.facebook.com/122182641380650720/posts/122172285188650720" target="_blank" rel="noopener">ফেসবুকে দেখুন →</a></article></div><div class="wrap"><section class="block"><div class="sec-head"><h2>আরও পোস্ট</h2><div class="bar"></div></div><div class="grid"><article class="card"><a href="/post/533774549810859_511822118324182/"><img class="pic" src="/images/posts/533774549810859_511822118324182_1.jpg" alt="ফটো পোস্ট" loading="lazy" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement(&#x27;div&#x27;),{className:&#x27;ph&#x27;,textContent:&#x27;🖼️&#x27;}))"></a><div class="body"><div><a class="chip" href="/category/gallery/">গ্যালারি</a><span class="date">৮ মার্চ, ২০২৫</span></div><h3><a href="/post/533774549810859_511822118324182/">ফটো পোস্ট</a></h3><p></p><a class="more" href="/post/533774549810859_511822118324182/">বিস্তারিত পড়ুন →</a></div></article><article class="card"><a href="/post/533774549810859_122104195082650720/"><img class="pic" src="/images/posts/533774549810859_122104195082650720_1.jpg" alt="ফটো পোস্ট" loading="lazy" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement(&#x27;div&#x27;),{className:&#x27;ph&#x27;,textContent:&#x27;🖼️&#x27;}))"></a><div class="body"><div><a class="chip" href="/category/gallery/">গ্যালারি</a><span class="date">২ ডিসেম্বর, ২০২৪</span></div><h3><a href="/post/533774549810859_122104195082650720/">ফটো পোস্ট</a></h3><p></p><a class="more" href="/post/533774549810859_122104195082650720/">বিস্তারিত পড়ুন →</a></div></article></div></section></div>
 <footer>
@@ -34,6 +36,14 @@
   দৈনিক আজকের পত্রিকার সহযোগী সংগঠন<br>
   <a href="mailto:pathakbondhu.iu@gmail.com">pathakbondhu.iu@gmail.com</a> &nbsp;|&nbsp; <a href="https://www.facebook.com/pathakbondhu.iu" target="_blank" rel="noopener">ফেসবুক পেইজ</a>
 </footer>
-
+<script>
+(function(){var d=document.getElementById("clkDate"),t=document.getElementById("clkTime");if(!d||!t)return;
+var fd,ft;try{
+fd=new Intl.DateTimeFormat("bn-BD",{timeZone:"Asia/Dhaka",weekday:"long",day:"numeric",month:"long",year:"numeric"});
+ft=new Intl.DateTimeFormat("bn-BD",{timeZone:"Asia/Dhaka",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true});
+}catch(e){return;}
+function tick(){var n=new Date();d.textContent=fd.format(n);t.textContent=ft.format(n);}
+tick();setInterval(tick,1000);})();
+</script>
 </body>
 </html>

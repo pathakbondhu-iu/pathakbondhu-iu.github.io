@@ -16,12 +16,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/style.css?v=f173db03">
+<link rel="stylesheet" href="/assets/style.css?v=fd4a4cda">
 </head>
 <body>
-<div class="topbar"><div class="wrap">
+<div class="topbar">
+<div class="clockbar"><div class="wrap"><span id="clkDate"></span><b id="clkTime"></b></div></div>
+<div class="wrap main-row">
   <a class="brand serif" href="/"><img src="/images/pathakbondhu-logo.png" alt="" onerror="this.style.display='none'"><span>পাঠকবন্ধু</span></a>
-  <nav class="menu"><a href="/">হোম</a><a href="/about/" class="on">আমাদের কথা</a><a href="/posts/">সব পোস্ট</a><a href="/category/">ক্যাটাগরি</a><a href="/contact/">যোগাযোগ</a></nav>
+  <nav class="menu"><a href="/">হোম</a><a href="/about/" class="on">আমাদের কথা</a><a href="/committee/">কমিটি</a><a href="/posts/">সব পোস্ট</a><a href="/category/">ক্যাটাগরি</a><a href="/contact/">যোগাযোগ</a></nav>
 </div></div>
 <div class="pagehead"><h1 class="serif">আমাদের কথা</h1><p>পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা</p></div><div class="wrap"><section class="block"><div class="about-text"><p>পাঠকবন্ধু, ইসলামী বিশ্ববিদ্যালয় শাখা একটি অরাজনৈতিক, সেবামূলক ও শিক্ষামূলক সামাজিক সংগঠন। জ্ঞানচর্চা ও মানবসেবার মাধ্যমে সমাজের পাশে থাকাই আমাদের লক্ষ্য।</p><p>দৈনিক আজকের পত্রিকার সহযোগী সংগঠন হিসেবে আমরা শিক্ষার্থী ও সমাজের মানুষের জন্য কাজ করার চেষ্টা করি।</p></div><div class="pillars"><div class="pillar"><div class="ic">🕊️</div><h3>অরাজনৈতিক</h3><p>কোনো রাজনৈতিক দল বা মতের সাথে আমাদের সম্পৃক্ততা নেই।</p></div><div class="pillar"><div class="ic">🤝</div><h3>সেবামূলক</h3><p>মানুষের কল্যাণে সেবামূলক কাজে অংশগ্রহণ।</p></div><div class="pillar"><div class="ic">📚</div><h3>শিক্ষামূলক</h3><p>শিক্ষা ও জ্ঞানচর্চার প্রসারে কার্যক্রম।</p></div></div></section><section class="block"><div class="contact"><h3>আমাদের সাথে যোগাযোগ করুন</h3><p>যেকোনো প্রশ্ন, পরামর্শ বা সহযোগিতার জন্য লিখুন।</p><div class="row"><a class="btn" href="mailto:pathakbondhu.iu@gmail.com">ইমেইল পাঠান</a><a class="btn alt" href="https://www.facebook.com/pathakbondhu.iu" target="_blank" rel="noopener">ফেসবুক পেইজ</a></div><div class="mail">ইমেইল: <a href="mailto:pathakbondhu.iu@gmail.com">pathakbondhu.iu@gmail.com</a></div></div></section></div>
 <footer>
@@ -34,6 +36,14 @@
   দৈনিক আজকের পত্রিকার সহযোগী সংগঠন<br>
   <a href="mailto:pathakbondhu.iu@gmail.com">pathakbondhu.iu@gmail.com</a> &nbsp;|&nbsp; <a href="https://www.facebook.com/pathakbondhu.iu" target="_blank" rel="noopener">ফেসবুক পেইজ</a>
 </footer>
-
+<script>
+(function(){var d=document.getElementById("clkDate"),t=document.getElementById("clkTime");if(!d||!t)return;
+var fd,ft;try{
+fd=new Intl.DateTimeFormat("bn-BD",{timeZone:"Asia/Dhaka",weekday:"long",day:"numeric",month:"long",year:"numeric"});
+ft=new Intl.DateTimeFormat("bn-BD",{timeZone:"Asia/Dhaka",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true});
+}catch(e){return;}
+function tick(){var n=new Date();d.textContent=fd.format(n);t.textContent=ft.format(n);}
+tick();setInterval(tick,1000);})();
+</script>
 </body>
 </html>
