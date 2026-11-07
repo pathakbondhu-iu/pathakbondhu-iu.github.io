@@ -20,20 +20,27 @@
   input[type=text],input[type=password],input[type=date],input[type=email],select,textarea{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font:inherit;background:#fff}
   textarea{min-height:140px;resize:vertical}
   button{font:inherit;cursor:pointer;border-radius:10px;border:0;padding:8px 16px}
-  .btn{background:var(--green);color:#fff;font-weight:600}.btn:hover{background:var(--deep)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .btn{background:var(--green);color:#fff;font-weight:600}.btn:hover:not(:disabled){background:var(--deep)}
   .btn.sec{background:#e9e6dc;color:var(--ink)}.btn.danger{background:#fbe9e7;color:var(--red)}
   .btn.sm{padding:4px 12px;font-size:.88rem}
+  .btn.pub{background:var(--gold);color:#2b2106;font-size:1rem;padding:8px 20px}
   .link{background:none;color:var(--green);text-decoration:underline;padding:4px 0}
   .muted{color:var(--muted);font-size:.9rem}
   .hint{background:#fff8e1;border:1px solid #f0dca0;border-radius:10px;padding:10px 12px;font-size:.9rem;margin-top:10px}
-  .tabs{display:flex;gap:8px;margin-bottom:14px}.tabs button{background:#e9e6dc}.tabs button.on{background:var(--green);color:#fff}
+  .pubbar{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .pubbar .in{max-width:860px;margin:0 auto;padding:8px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .pubbar .info{flex:1 1 220px;font-size:.92rem}
+  .pubbar .info.dirty{color:#8a5a00;font-weight:600}
+  .pubbar .status{flex:1 1 100%;font-size:.88rem;color:var(--green)}.pubbar .status.err{color:var(--red)}
+  .tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}.tabs button{background:#e9e6dc}.tabs button.on{background:var(--green);color:#fff}
   .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
   .toolbar input[type=text]{flex:1 1 180px}.toolbar select{flex:0 1 160px}
   .row{display:flex;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding:10px 4px}
   .row:last-child{border-bottom:0}.row .t{flex:1;min-width:0}
   .row .t b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .chip{display:inline-block;font-size:.76rem;background:var(--soft);color:var(--green);padding:0 9px;border-radius:10px;font-weight:600}
-  .chip.hid{background:#eee;color:#666}
+  .chip.hid{background:#eee;color:#666}.chip.pend{background:#fff0c9;color:#8a5a00}
   #toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--deep);color:#fff;padding:10px 18px;border-radius:12px;max-width:92%;display:none;z-index:99;box-shadow:0 6px 20px rgba(0,0,0,.3)}
   #toast.err{background:var(--red)}
   .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);overflow:auto;padding:14px;z-index:50;display:none}
@@ -75,55 +82,61 @@
     <label for="np2">পাসওয়ার্ড আবার লিখুন</label>
     <input type="password" id="np2" autocomplete="new-password">
     <div class="actions"><button class="btn" id="setupBtn">সংরক্ষণ করে প্রবেশ</button><button class="btn sec" id="cancelSetup" hidden>ফিরে যান</button></div>
-    <div class="hint">টোকেন কীভাবে বানাবেন তা কথোপকথনে ধাপে ধাপে বলা আছে। মনে রাখবেন: টোকেন আর পাসওয়ার্ড কাউকে দেবেন না।</div>
+    <div class="hint">টোকেনের অনুমতি: <b>Contents → Read and write</b> এবং <b>Actions → Read and write</b>। মনে রাখবেন: টোকেন আর পাসওয়ার্ড কাউকে দেবেন না।</div>
   </div>
 </div>
 
 <!-- এডিটর -->
-<div class="wrap" id="appView" hidden>
-  <div class="tabs"><button id="tabPosts" class="on">পোস্ট</button><button id="tabCommittee">কমিটি</button><button id="tabSite">সাইটের তথ্য</button></div>
+<div id="appView" hidden>
+  <div class="pubbar"><div class="in">
+    <span class="info" id="pubInfo">কোনো অপ্রকাশিত পরিবর্তন নেই</span>
+    <button class="btn sec sm" id="syncBtn" title="ফেসবুক থেকে নতুন পোস্ট এখনই আনা হবে ও সাইটে আসবে">🔄 ফেসবুক সিঙ্ক</button>
+    <button class="btn sec sm" id="reloadBtn">রিফ্রেশ</button>
+    <button class="btn danger sm" id="discardBtn" hidden>বাতিল</button>
+    <button class="btn pub" id="publishBtn" disabled>🚀 প্রকাশ করুন</button>
+    <div class="status" id="runStatus" hidden></div>
+  </div></div>
+  <div class="wrap">
+    <div class="tabs"><button id="tabPosts" class="on">পোস্ট</button><button id="tabCommittee">কমিটি</button><button id="tabSite">সাইটের তথ্য</button></div>
 
-  <div id="postsPane">
-    <div class="toolbar">
-      <input type="text" id="q" placeholder="খুঁজুন...">
-      <select id="fcat"></select>
-      <label style="margin:0;font-weight:400"><input type="checkbox" id="showHidden"> লুকানো পোস্টও দেখান</label>
-      <button class="btn" id="newPost">+ নতুন পোস্ট</button>
-    </div>
-    <div class="box" id="list"></div>
-  </div>
-
-  <div id="committeePane" hidden>
-    <div class="box">
-      <h2>কমিটি</h2>
-      <label for="c_term">কমিটির মেয়াদ/পরিচয় (সাইটে শিরোনামের নিচে দেখাবে)</label>
-      <input type="text" id="c_term">
-      <div class="actions">
-        <button class="btn" id="c_new">+ নতুন সদস্য</button>
-        <button class="btn" id="c_save" hidden>ক্রম ও মেয়াদ সংরক্ষণ করুন</button>
+    <div id="postsPane">
+      <div class="toolbar">
+        <input type="text" id="q" placeholder="খুঁজুন...">
+        <select id="fcat"></select>
+        <label style="margin:0;font-weight:400"><input type="checkbox" id="showHidden"> লুকানো পোস্টও দেখান</label>
+        <button class="btn" id="newPost">+ নতুন পোস্ট</button>
       </div>
-      <p class="muted">▲ ▼ বোতামে ক্রম বদলান, তারপর "ক্রম ও মেয়াদ সংরক্ষণ করুন" চাপুন। সাইটে "বড় করে দেখানো" টিক দেওয়া সদস্যরা (সভাপতি ও সাধারণ সম্পাদক) আলাদা বড় কার্ডে থাকবেন, বাকিরা গ্রুপ অনুযায়ী।</p>
+      <div class="box" id="list"></div>
     </div>
-    <div class="box" id="cList"></div>
-  </div>
 
-  <div id="sitePane" hidden>
-    <div class="box">
-      <h2>লোগো বদলান</h2>
-      <p class="muted">শুধু PNG ফাইল (৩ MB-এর কম)। বদলাতে ফাইল বেছে নিন।</p>
-      <label for="lg1">পাঠকবন্ধুর মেইন লোগো</label><input type="file" id="lg1" accept="image/png" data-path="images/pathakbondhu-logo.png">
-      <label for="lg2">ইসলামী বিশ্ববিদ্যালয়ের লোগো</label><input type="file" id="lg2" accept="image/png" data-path="images/iu-logo.png">
-      <label for="lg3">দৈনিক আজকের পত্রিকার লোগো</label><input type="file" id="lg3" accept="image/png" data-path="images/ajkerpatrika-logo.png">
+    <div id="committeePane" hidden>
+      <div class="box">
+        <h2>কমিটি</h2>
+        <label for="c_term">কমিটির মেয়াদ/পরিচয় (সাইটে শিরোনামের নিচে দেখাবে)</label>
+        <input type="text" id="c_term">
+        <div class="actions"><button class="btn" id="c_new">+ নতুন সদস্য</button></div>
+        <p class="muted">▲ ▼ বোতামে ক্রম বদলান। "বড় করে দেখান" টিক দেওয়া সদস্যরা (সভাপতি ও সাধারণ সম্পাদক) আলাদা বড় কার্ডে থাকবেন। সব পরিবর্তন ওপরের "প্রকাশ করুন" চাপলে সাইটে যাবে।</p>
+      </div>
+      <div class="box" id="cList"></div>
     </div>
-    <div class="box">
-      <h2>সাইটের তথ্য</h2>
-      <label for="s_email">যোগাযোগের ইমেইল</label><input type="email" id="s_email">
-      <label for="s_fb">ফেসবুক পেইজের লিংক</label><input type="text" id="s_fb">
-      <label for="s_about">আমাদের কথা (প্রতিটি অনুচ্ছেদের মাঝে একটি ফাঁকা লাইন রাখুন)</label><textarea id="s_about"></textarea>
-      <label>তিনটি কার্ড (আইকন, শিরোনাম, লেখা)</label>
-      <div id="s_pillars"></div>
-      <button class="btn sec sm" id="addPillar" style="margin-top:8px">+ কার্ড যোগ করুন</button>
-      <div class="actions"><button class="btn" id="saveSite">সংরক্ষণ করুন</button></div>
+
+    <div id="sitePane" hidden>
+      <div class="box">
+        <h2>লোগো বদলান</h2>
+        <p class="muted">শুধু PNG ফাইল (৩ MB-এর কম)। ফাইল বাছলে "প্রকাশ করুন" চাপার পর বদলাবে।</p>
+        <label for="lg1">পাঠকবন্ধুর মেইন লোগো</label><input type="file" id="lg1" accept="image/png" data-path="images/pathakbondhu-logo.png"><div class="muted" id="lg1s"></div>
+        <label for="lg2">ইসলামী বিশ্ববিদ্যালয়ের লোগো</label><input type="file" id="lg2" accept="image/png" data-path="images/iu-logo.png"><div class="muted" id="lg2s"></div>
+        <label for="lg3">দৈনিক আজকের পত্রিকার লোগো</label><input type="file" id="lg3" accept="image/png" data-path="images/ajkerpatrika-logo.png"><div class="muted" id="lg3s"></div>
+      </div>
+      <div class="box">
+        <h2>সাইটের তথ্য</h2>
+        <label for="s_email">যোগাযোগের ইমেইল</label><input type="email" id="s_email">
+        <label for="s_fb">ফেসবুক পেইজের লিংক</label><input type="text" id="s_fb">
+        <label for="s_about">আমাদের সম্পর্কে (প্রতিটি অনুচ্ছেদের মাঝে একটি ফাঁকা লাইন রাখুন)</label><textarea id="s_about"></textarea>
+        <label>কার্ডসমূহ (আইকন, শিরোনাম, লেখা)</label>
+        <div id="s_pillars"></div>
+        <button class="btn sec sm" id="addPillar" style="margin-top:8px">+ কার্ড যোগ করুন</button>
+      </div>
     </div>
   </div>
 </div>
@@ -142,11 +155,13 @@
   <input type="file" id="f_file" accept="image/*" multiple style="margin-top:8px">
   <label for="f_fb">ফেসবুক লিংক (ঐচ্ছিক)</label><input type="text" id="f_fb">
   <div class="actions">
-    <button class="btn" id="m_save">সংরক্ষণ করুন</button>
+    <button class="btn" id="m_save">পরিবর্তন রাখুন</button>
     <button class="btn sec" id="m_cancel">বাতিল</button>
     <button class="btn danger" id="m_del"></button>
   </div>
+  <p class="muted">"পরিবর্তন রাখুন" চাপলে সাইটে এখনই যাবে না। সব কাজ শেষে ওপরের "প্রকাশ করুন" চাপুন।</p>
 </div></div>
+
 <!-- সদস্য এডিট -->
 <div class="modal" id="mmodal"><div class="panel">
   <h2 id="mmTitle">সদস্য</h2>
@@ -161,7 +176,7 @@
   <div class="thumbs" id="mm_thumb"></div>
   <input type="file" id="mm_file" accept="image/*" style="margin-top:8px">
   <div class="actions">
-    <button class="btn" id="mm_save">সংরক্ষণ করুন</button>
+    <button class="btn" id="mm_save">পরিবর্তন রাখুন</button>
     <button class="btn sec" id="mm_cancel">বাতিল</button>
     <button class="btn danger" id="mm_del">মুছে ফেলুন</button>
   </div>
@@ -172,23 +187,30 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var VAULT_KEY = "pb_vault_v1";
-  var S = { token: "", repo: "", posts: [], postsSha: "", site: null, siteSha: "", cats: [], editing: null, imgs: [], previews: {}, busy: false };
+  var WORKFLOW = "sync.yml", WORKFLOW_NAME = "Facebook Sync and Build";
+  var LOGOS = ["images/pathakbondhu-logo.png", "images/iu-logo.png", "images/ajkerpatrika-logo.png"];
+  var S = {
+    token: "", repo: "", branch: "main", tab: "posts", busy: false, watchId: 0,
+    posts: [], postOps: {}, newIds: {}, files: {},
+    cats: [], editing: null, imgs: [],
+    cm: null, cmSha: "", cmDirty: false, mEdit: null, mPhoto: "",
+    site: null, siteSha: "", siteDirty: false
+  };
 
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; }
   function toast(msg, err) {
     var t = $("toast"); t.textContent = msg; t.className = err ? "err" : ""; t.style.display = "block";
-    clearTimeout(toast._t); toast._t = setTimeout(function () { t.style.display = "none"; }, err ? 6000 : 3500);
+    clearTimeout(toast._t); toast._t = setTimeout(function () { t.style.display = "none"; }, err ? 7000 : 4000);
   }
   function b64e(buf) { var s = ""; var a = new Uint8Array(buf); for (var i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s); }
   function b64d(str) { var s = atob(str), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
-  function utf8e(s) { return btoa(unescape(encodeURIComponent(s))); }
   function utf8d(b) { return decodeURIComponent(escape(atob(b.replace(/\s/g, "")))); }
+  function bnNum(n) { return String(n).replace(/\d/g, function (d) { return "০১২৩৪৫৬৭৮৯"[d]; }); }
 
   // ---------- পাসওয়ার্ড দিয়ে টোকেন তালাবদ্ধ ----------
   function deriveKey(pw, salt, iter) {
     return crypto.subtle.importKey("raw", new TextEncoder().encode(pw), "PBKDF2", false, ["deriveKey"]).then(function (km) {
-      return crypto.subtle.deriveKey({ name: "PBKDF2", salt: salt, iterations: iter, hash: "SHA-256" }, km,
-        { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+      return crypto.subtle.deriveKey({ name: "PBKDF2", salt: salt, iterations: iter, hash: "SHA-256" }, km, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
     });
   }
   function lockToken(token, pw, repo) {
@@ -211,27 +233,24 @@
   function gh(method, path, body, accept) {
     var headers = { "Authorization": "Bearer " + S.token, "Accept": accept || "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
     if (body) headers["Content-Type"] = "application/json";
-    return fetch("https://api.github.com/repos/" + S.repo + path, { method: method, headers: headers, body: body ? JSON.stringify(body) : undefined })
+    return fetch("https://api.github.com/repos/" + S.repo + path, { method: method, headers: headers, cache: "no-store", body: body ? JSON.stringify(body) : undefined })
       .then(function (r) {
         if (r.ok) return r;
         var msg = "GitHub ত্রুটি (" + r.status + ")";
         if (r.status === 401) msg = "টোকেন ভুল বা মেয়াদ শেষ। নতুন টোকেন দিয়ে সেটআপ করুন।";
-        else if (r.status === 403) msg = "অনুমতি নেই বা সীমা শেষ। টোকেনের Contents → Read and write অনুমতি আছে কিনা দেখুন।";
+        else if (r.status === 403) msg = "অনুমতি নেই বা সীমা শেষ। টোকেনের অনুমতি (Contents ও Actions → Read and write) দেখুন।";
         else if (r.status === 404) msg = "রিপোজিটরি বা ফাইল পাওয়া যায়নি। রিপোজিটরির নাম ও টোকেনের অনুমতি দেখুন।";
-        else if (r.status === 409 || r.status === 422) msg = "ফাইলটি এর মধ্যে অন্য কোথাও বদলেছে। পাতা রিফ্রেশ করে আবার চেষ্টা করুন।";
+        else if (r.status === 409 || r.status === 422) msg = "এর মধ্যে অন্য কোথাও পরিবর্তন হয়েছে। আবার চেষ্টা করুন।";
         var e = new Error(msg); e.status = r.status; throw e;
       });
   }
-  function getFile(path) {
-    return gh("GET", "/contents/" + path).then(function (r) { return r.json(); }).then(function (j) {
+  function getFile(path, ref) {
+    var q = ref ? "?ref=" + encodeURIComponent(ref) : "";
+    return gh("GET", "/contents/" + path + q).then(function (r) { return r.json(); }).then(function (j) {
       if (j.content && j.encoding === "base64") return { sha: j.sha, text: utf8d(j.content) };
-      return gh("GET", "/contents/" + path, null, "application/vnd.github.raw+json").then(function (r) { return r.text(); })
+      return gh("GET", "/contents/" + path + q, null, "application/vnd.github.raw+json").then(function (r) { return r.text(); })
         .then(function (t) { return { sha: j.sha, text: t }; });
     });
-  }
-  function putFile(path, contentB64, sha, message) {
-    var body = { message: message, content: contentB64 }; if (sha) body.sha = sha;
-    return gh("PUT", "/contents/" + path, body).then(function (r) { return r.json(); });
   }
 
   // ---------- প্রবেশ ----------
@@ -247,30 +266,35 @@
     try { var v = JSON.parse(localStorage.getItem(VAULT_KEY)); if (v && v.repo) guess = v.repo; } catch (e) {}
     $("repo").value = $("repo").value || guess;
   }
-  function enter(token, repo) {
-    S.token = token; S.repo = repo;
-    return loadAll().then(function () {
-      $("loginView").hidden = true; $("appView").hidden = false; $("logout").hidden = false;
-      renderList();
-    });
+  function start() {
+    return gh("GET", "").then(function (r) { return r.json(); }).then(function (j) { S.branch = j.default_branch || "main"; })
+      .then(loadAll).then(function () {
+        $("loginView").hidden = true; $("appView").hidden = false; $("logout").hidden = false;
+      });
+  }
+  function resetStaging() {
+    S.postOps = {}; S.newIds = {}; S.files = {}; S.cm = null; S.site = null; S.cmDirty = false; S.siteDirty = false;
+    ["lg1s", "lg2s", "lg3s"].forEach(function (id) { $(id).textContent = ""; });
   }
   function loadAll() {
     return Promise.all([getFile("data/posts.json"), fetch("/site.json?_=" + Date.now()).then(function (r) { return r.json(); }).catch(function () { return null; })])
       .then(function (res) {
-        S.posts = JSON.parse(res[0].text); S.postsSha = res[0].sha;
+        S.posts = JSON.parse(res[0].text);
         var cfg = res[1];
         S.cats = (cfg && cfg.categories ? cfg.categories.map(function (c) { return c.name; }) : ["খবর", "ইভেন্ট", "ঘোষণা", "সেবামূলক কাজ", "শিক্ষামূলক", "গ্যালারি", "সাধারণ"]);
-        fillCatSelects();
+        resetStaging(); fillCatSelects(); renderList(); updateBar();
+        if (S.tab === "committee") loadCommittee(); if (S.tab === "site") loadSite();
       });
   }
   function fillCatSelects() {
-    var f = $("fcat"); f.textContent = "";
+    var cur = $("fcat").value, f = $("fcat"); f.textContent = "";
     var o = el("option", "", "সব ক্যাটাগরি"); o.value = ""; f.appendChild(o);
     var m = $("f_cat"); m.textContent = "";
     S.cats.forEach(function (c) {
       var a = el("option", "", c); a.value = c; f.appendChild(a);
       var b = el("option", "", c); b.value = c; m.appendChild(b);
     });
+    f.value = cur;
   }
 
   $("setupBtn").onclick = function () {
@@ -279,18 +303,16 @@
     if (!tok) return toast("GitHub টোকেন দিন", true);
     if (p1.length < 8) return toast("পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের দিন", true);
     if (p1 !== p2) return toast("দুটি পাসওয়ার্ড মিলছে না", true);
-    $("setupBtn").disabled = true;
-    S.token = tok; S.repo = repo;
-    loadAll().then(function () { return lockToken(tok, p1, repo); }).then(function () {
+    $("setupBtn").disabled = true; S.token = tok; S.repo = repo;
+    start().then(function () { return lockToken(tok, p1, repo); }).then(function () {
       $("tok").value = ""; $("np1").value = ""; $("np2").value = "";
-      $("loginView").hidden = true; $("appView").hidden = false; $("logout").hidden = false; renderList();
     }).catch(function (e) { S.token = ""; toast(e.message || "সেটআপ ব্যর্থ", true); })
       .then(function () { $("setupBtn").disabled = false; });
   };
   $("unlockBtn").onclick = function () {
     var pw = $("pw").value; if (!pw) return;
     $("unlockBtn").disabled = true;
-    unlockToken(pw).then(function (r) { $("pw").value = ""; return enter(r.token, r.repo); })
+    unlockToken(pw).then(function (r) { $("pw").value = ""; S.token = r.token; S.repo = r.repo; return start(); })
       .catch(function (e) { S.token = ""; toast(e && e.status ? e.message : "ভুল পাসওয়ার্ড", true); })
       .then(function () { $("unlockBtn").disabled = false; });
   };
@@ -300,15 +322,37 @@
   $("forget").onclick = function () {
     if (confirm("এই ডিভাইস থেকে সংরক্ষিত টোকেন মুছে ফেলবেন? আবার ঢুকতে নতুন করে সেটআপ করতে হবে।")) { localStorage.removeItem(VAULT_KEY); showLogin(); }
   };
-  $("logout").onclick = function () { S.token = ""; S.posts = []; showLogin(); };
+  $("logout").onclick = function () {
+    if (pendingCount() && !confirm("অপ্রকাশিত পরিবর্তন মুছে যাবে। বের হবেন?")) return;
+    S.token = ""; S.posts = []; resetStaging(); showLogin();
+  };
+
+  // ---------- অপ্রকাশিত পরিবর্তনের হিসাব ----------
+  function logoCount() { return LOGOS.filter(function (p) { return S.files[p]; }).length; }
+  function pendingCount() {
+    return Object.keys(S.postOps).length + (S.cmDirty ? 1 : 0) + (S.siteDirty ? 1 : 0) + logoCount();
+  }
+  function updateBar() {
+    var n = pendingCount(), info = $("pubInfo");
+    if (n) {
+      var parts = [];
+      var pc = Object.keys(S.postOps).length;
+      if (pc) parts.push("পোস্ট " + bnNum(pc) + "টি");
+      if (S.cmDirty) parts.push("কমিটি");
+      if (S.siteDirty) parts.push("সাইটের তথ্য");
+      if (logoCount()) parts.push("লোগো " + bnNum(logoCount()) + "টি");
+      info.textContent = "অপ্রকাশিত পরিবর্তন: " + parts.join(", "); info.className = "info dirty";
+    } else { info.textContent = "কোনো অপ্রকাশিত পরিবর্তন নেই"; info.className = "info"; }
+    $("publishBtn").disabled = !n || S.busy; $("discardBtn").hidden = !n;
+  }
+  window.addEventListener("beforeunload", function (e) { if (S.token && pendingCount()) { e.preventDefault(); e.returnValue = ""; } });
 
   // ---------- ট্যাব ----------
   function tab(name) {
+    S.tab = name;
     $("postsPane").hidden = name !== "posts"; $("sitePane").hidden = name !== "site"; $("committeePane").hidden = name !== "committee";
-    $("tabPosts").className = name === "posts" ? "on" : ""; $("tabSite").className = name === "site" ? "on" : "";
-    $("tabCommittee").className = name === "committee" ? "on" : "";
-    if (name === "site") loadSite();
-    if (name === "committee") loadCommittee();
+    $("tabPosts").className = name === "posts" ? "on" : ""; $("tabSite").className = name === "site" ? "on" : ""; $("tabCommittee").className = name === "committee" ? "on" : "";
+    if (name === "site") loadSite(); if (name === "committee") loadCommittee();
   }
   $("tabPosts").onclick = function () { tab("posts"); };
   $("tabSite").onclick = function () { tab("site"); };
@@ -332,6 +376,7 @@
       var m = el("span", "muted", bnDate(x.p.date) + " ");
       m.appendChild(el("span", "chip", x.p.category || "সাধারণ"));
       if (x.p.hidden) { m.appendChild(document.createTextNode(" ")); m.appendChild(el("span", "chip hid", "লুকানো")); }
+      if (S.postOps[x.p.id]) { m.appendChild(document.createTextNode(" ")); m.appendChild(el("span", "chip pend", "অপ্রকাশিত")); }
       t.appendChild(m); r.appendChild(t);
       var b = el("button", "btn sm", "এডিট"); b.onclick = function () { openEditor(x.i); };
       r.appendChild(b); box.appendChild(r);
@@ -339,38 +384,12 @@
   }
   ["input", "change"].forEach(function (ev) { $("q").addEventListener(ev, renderList); $("fcat").addEventListener(ev, renderList); $("showHidden").addEventListener(ev, renderList); });
 
-  // ---------- পোস্ট এডিটর ----------
-  function isFb(p) { return String(p.id || "").indexOf("_") >= 0; }
-  function today() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  // ---------- ছবি (প্রকাশের আগে মেমোরিতে রাখা হয়) ----------
   function thumbSrc(path) {
-    if (S.previews[path]) return S.previews[path];
+    if (S.files[path] && S.files[path].url) return S.files[path].url;
     if (/^https?:\/\//.test(path)) return path;
     return "/" + String(path).replace(/^\/+/, "");
   }
-  function renderThumbs() {
-    var box = $("f_thumbs"); box.textContent = "";
-    S.imgs.forEach(function (path, i) {
-      var t = el("div", "thumb"), im = el("img"); im.src = thumbSrc(path); im.alt = ""; t.appendChild(im);
-      var x = el("button", "", "×"); x.title = "সরান"; x.onclick = function () { S.imgs.splice(i, 1); renderThumbs(); };
-      t.appendChild(x); box.appendChild(t);
-    });
-  }
-  function openEditor(idx) {
-    var isNew = idx < 0, p = isNew ? { id: "manual-" + Date.now(), title: "", date: today(), category: "সাধারণ", text: "", images: [], fb_url: "" } : S.posts[idx];
-    S.editing = { idx: idx, isNew: isNew, origDate: p.date || "" };
-    S.imgs = (p.images || []).slice();
-    $("mTitle").textContent = isNew ? "নতুন পোস্ট" : "পোস্ট এডিট";
-    $("f_title").value = p.title || ""; $("f_date").value = bnDate(p.date) || today();
-    var cat = p.category && S.cats.indexOf(p.category) >= 0 ? p.category : (S.cats.indexOf("সাধারণ") >= 0 ? "সাধারণ" : S.cats[0]);
-    $("f_cat").value = cat; $("f_text").value = p.text || ""; $("f_fb").value = p.fb_url || "";
-    var d = $("m_del");
-    if (isNew) d.hidden = true;
-    else { d.hidden = false; d.textContent = isFb(p) ? (p.hidden ? "আবার দেখান" : "সাইট থেকে লুকান") : "মুছে ফেলুন"; }
-    renderThumbs(); $("modal").classList.add("open");
-  }
-  $("newPost").onclick = function () { openEditor(-1); };
-  $("m_cancel").onclick = function () { $("modal").classList.remove("open"); };
-
   function resizeToJpeg(file, maxSide) {
     return new Promise(function (resolve, reject) {
       var url = URL.createObjectURL(file), img = new Image();
@@ -387,74 +406,159 @@
   function blobB64(blob) {
     return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(String(r.result).split(",")[1]); }; r.onerror = rej; r.readAsDataURL(blob); });
   }
+  function stageFile(path, blob) {
+    return blobB64(blob).then(function (b) { S.files[path] = { b64: b, url: URL.createObjectURL(blob) }; });
+  }
+
+  // ---------- পোস্ট এডিটর ----------
+  function isFb(p) { return String(p.id || "").indexOf("_") >= 0; }
+  function today() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function renderThumbs() {
+    var box = $("f_thumbs"); box.textContent = "";
+    S.imgs.forEach(function (path, i) {
+      var t = el("div", "thumb"), im = el("img"); im.src = thumbSrc(path); im.alt = ""; t.appendChild(im);
+      var x = el("button", "", "×"); x.title = "সরান"; x.onclick = function () { S.imgs.splice(i, 1); renderThumbs(); };
+      t.appendChild(x); box.appendChild(t);
+    });
+  }
+  function openEditor(idx) {
+    var isNew = idx < 0, p = isNew ? { id: "manual-" + Date.now(), title: "", date: today(), category: "সাধারণ", text: "", images: [], fb_url: "" } : S.posts[idx];
+    S.editing = { idx: idx, isNew: isNew, origDate: p.date || "", id: p.id };
+    S.imgs = (p.images || []).slice();
+    $("mTitle").textContent = isNew ? "নতুন পোস্ট" : "পোস্ট এডিট";
+    $("f_title").value = p.title || ""; $("f_date").value = bnDate(p.date) || today();
+    var cat = p.category && S.cats.indexOf(p.category) >= 0 ? p.category : (S.cats.indexOf("সাধারণ") >= 0 ? "সাধারণ" : S.cats[0]);
+    $("f_cat").value = cat; $("f_text").value = p.text || ""; $("f_fb").value = p.fb_url || "";
+    var d = $("m_del");
+    if (isNew) d.hidden = true;
+    else { d.hidden = false; d.textContent = isFb(p) ? (p.hidden ? "আবার দেখান" : "সাইট থেকে লুকান") : "মুছে ফেলুন"; }
+    renderThumbs(); $("modal").classList.add("open");
+  }
+  $("newPost").onclick = function () { openEditor(-1); };
+  $("m_cancel").onclick = function () { $("modal").classList.remove("open"); };
   $("f_file").onchange = function () {
-    var files = Array.prototype.slice.call(this.files || []); this.value = "";
-    if (!files.length) return;
-    toast("ছবি আপলোড হচ্ছে...");
+    var files = Array.prototype.slice.call(this.files || []); this.value = ""; if (!files.length) return;
     files.reduce(function (chain, f, n) {
       return chain.then(function () {
-        return resizeToJpeg(f).then(function (blob) {
+        return resizeToJpeg(f, 1600).then(function (blob) {
           var path = "images/uploads/" + Date.now() + "-" + n + ".jpg";
-          return blobB64(blob).then(function (b) { return putFile(path, b, null, "এডিটর: ছবি আপলোড"); }).then(function () {
-            S.previews[path] = URL.createObjectURL(blob); S.imgs.push(path); renderThumbs();
-          });
+          return stageFile(path, blob).then(function () { S.imgs.push(path); renderThumbs(); });
         });
       });
-    }, Promise.resolve()).then(function () { toast("ছবি যোগ হয়েছে। এখন পোস্ট সংরক্ষণ করুন।"); })
-      .catch(function (e) { toast(e.message || "ছবি আপলোড ব্যর্থ", true); });
+    }, Promise.resolve()).catch(function (e) { toast(e.message || "ছবি যোগ করা যায়নি", true); });
   };
-
-  function savePosts(message) {
-    return putFile("data/posts.json", utf8e(JSON.stringify(S.posts, null, 2)), S.postsSha, message).then(function (j) {
-      S.postsSha = j.content.sha; renderList();
-    });
-  }
-  function guard(fn) {
-    if (S.busy) return; S.busy = true;
-    Promise.resolve().then(fn).catch(function (e) { toast(e.message || "ত্রুটি হয়েছে", true); }).then(function () { S.busy = false; });
+  function upsertLocal(arr, p) { var i = arr.findIndex(function (x) { return x.id === p.id; }); if (i >= 0) arr[i] = p; else arr.unshift(p); }
+  function removeLocal(arr, id) { var i = arr.findIndex(function (x) { return x.id === id; }); if (i >= 0) arr.splice(i, 1); }
+  function stagePost(p) { S.postOps[p.id] = { post: p }; upsertLocal(S.posts, p); renderList(); updateBar(); }
+  function stageRemove(id) {
+    if (S.newIds[id]) { delete S.postOps[id]; delete S.newIds[id]; } else S.postOps[id] = { remove: true };
+    removeLocal(S.posts, id); renderList(); updateBar();
   }
   $("m_save").onclick = function () {
-    guard(function () {
-      var ed = S.editing, title = $("f_title").value.trim();
-      if (!title) { toast("শিরোনাম লিখুন", true); return; }
-      var date = $("f_date").value || today();
-      if (!ed.isNew && date === bnDate(ed.origDate)) date = ed.origDate;
-      var base = ed.isNew ? { id: "manual-" + Date.now() } : S.posts[ed.idx];
-      var p = Object.assign({}, base, { title: title, date: date, category: $("f_cat").value, text: $("f_text").value,
-        images: S.imgs.slice(), fb_url: $("f_fb").value.trim(), edited: true });
-      if (ed.isNew) S.posts.unshift(p); else S.posts[ed.idx] = p;
-      return savePosts("এডিটর: " + (ed.isNew ? "নতুন পোস্ট" : "পোস্ট আপডেট")).then(function () {
-        $("modal").classList.remove("open"); toast("সংরক্ষিত হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে।");
-      }).catch(function (e) {
-        if (ed.isNew) S.posts.shift(); else S.posts[ed.idx] = base;
-        throw e;
-      });
-    });
+    var ed = S.editing, title = $("f_title").value.trim();
+    if (!title) return toast("শিরোনাম লিখুন", true);
+    var date = $("f_date").value || today();
+    if (!ed.isNew && date === bnDate(ed.origDate)) date = ed.origDate;
+    var base = ed.isNew ? { id: ed.id } : S.posts[ed.idx];
+    var p = Object.assign({}, base, { title: title, date: date, category: $("f_cat").value, text: $("f_text").value,
+      images: S.imgs.slice(), fb_url: $("f_fb").value.trim(), edited: true });
+    if (ed.isNew) S.newIds[p.id] = 1;
+    stagePost(p); $("modal").classList.remove("open");
+    toast("পরিবর্তন রাখা হয়েছে। সাইটে পাঠাতে ওপরের \"প্রকাশ করুন\" চাপুন।");
   };
   $("m_del").onclick = function () {
-    guard(function () {
-      var ed = S.editing, p = S.posts[ed.idx], backup = S.posts.slice(), msg;
-      if (isFb(p)) {
-        if (!p.hidden && !confirm("এই পোস্টটি সাইট থেকে লুকানো হবে (ফেসবুকে থেকে যাবে)। নিশ্চিত?")) return;
-        S.posts[ed.idx] = Object.assign({}, p, { hidden: !p.hidden, edited: true }); msg = p.hidden ? "পোস্ট আবার দেখানো হলো" : "পোস্ট লুকানো হলো";
-      } else {
-        if (!confirm("এই পোস্টটি স্থায়ীভাবে মুছে ফেলবেন?")) return;
-        S.posts.splice(ed.idx, 1); msg = "পোস্ট মুছে ফেলা হয়েছে";
-      }
-      return savePosts("এডিটর: " + msg).then(function () {
-        $("modal").classList.remove("open"); toast(msg + "। সাইটে আসতে ১–২ মিনিট লাগবে।");
-      }).catch(function (e) { S.posts = backup; throw e; });
-    });
+    var ed = S.editing, p = S.posts[ed.idx];
+    if (isFb(p)) {
+      if (!p.hidden && !confirm("এই পোস্টটি সাইট থেকে লুকানো হবে (ফেসবুকে থেকে যাবে)। নিশ্চিত?")) return;
+      stagePost(Object.assign({}, p, { hidden: !p.hidden, edited: true }));
+    } else {
+      if (!confirm("এই পোস্টটি স্থায়ীভাবে মুছে ফেলবেন?")) return;
+      stageRemove(p.id);
+    }
+    $("modal").classList.remove("open"); toast("পরিবর্তন রাখা হয়েছে। সাইটে পাঠাতে \"প্রকাশ করুন\" চাপুন।");
   };
 
-  // ---------- সাইটের তথ্য ----------
+  // ---------- কমিটি ----------
+  function cmInitial(name) { var m = String(name || "").match(/[ঀ-৿A-Za-z0-9]/); return m ? m[0] : "•"; }
+  function loadCommittee() {
+    if (S.cm) { renderCommittee(); return; }
+    getFile("data/committee.json").then(function (f) { S.cm = JSON.parse(f.text); S.cmSha = f.sha; })
+      .catch(function (e) { if (e.status === 404) { S.cm = { term: "", members: [] }; S.cmSha = ""; } else throw e; })
+      .then(function () { S.cm.members = S.cm.members || []; $("c_term").value = S.cm.term || ""; renderCommittee(); })
+      .catch(function (e) { toast(e.message || "কমিটির তথ্য আনা যায়নি", true); });
+  }
+  function cmChanged() { S.cmDirty = true; renderCommittee(); updateBar(); }
+  function renderCommittee() {
+    var box = $("cList"); box.textContent = "";
+    var ms = S.cm.members;
+    if (!ms.length) { box.appendChild(el("p", "muted", "এখনো কোনো সদস্য নেই। \"+ নতুন সদস্য\" চাপুন।")); return; }
+    ms.forEach(function (m, i) {
+      var r = el("div", "row"), ph;
+      if (m.photo) { ph = el("img"); ph.src = thumbSrc(m.photo); ph.alt = ""; ph.onerror = function () { ph.style.display = "none"; }; }
+      else { ph = el("div", "", cmInitial(m.name)); }
+      ph.style.cssText = "width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:center top;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--green);flex:none";
+      r.appendChild(ph);
+      var t = el("div", "t"); t.appendChild(el("b", "", m.name || ""));
+      var s = el("span", "muted", (m.title || "") + " "); s.appendChild(el("span", "chip", m.group || ""));
+      if (m.featured) { s.appendChild(document.createTextNode(" ")); s.appendChild(el("span", "chip", "বড় কার্ড")); }
+      t.appendChild(s); r.appendChild(t);
+      var up = el("button", "btn sec sm", "▲"), dn = el("button", "btn sec sm", "▼"), ed = el("button", "btn sm", "এডিট");
+      up.disabled = i === 0; dn.disabled = i === ms.length - 1;
+      up.onclick = function () { var x = ms[i]; ms[i] = ms[i - 1]; ms[i - 1] = x; cmChanged(); };
+      dn.onclick = function () { var x = ms[i]; ms[i] = ms[i + 1]; ms[i + 1] = x; cmChanged(); };
+      ed.onclick = function () { openMember(i); };
+      r.appendChild(up); r.appendChild(dn); r.appendChild(ed); box.appendChild(r);
+    });
+  }
+  $("c_term").addEventListener("input", function () { if (S.cm) { S.cmDirty = true; updateBar(); } });
+  $("c_new").onclick = function () { if (!S.cm) return toast("একটু অপেক্ষা করুন, তথ্য লোড হচ্ছে", true); openMember(-1); };
+  function renderMemberThumb() {
+    var box = $("mm_thumb"); box.textContent = ""; if (!S.mPhoto) return;
+    var t = el("div", "thumb"), im = el("img"); im.src = thumbSrc(S.mPhoto); im.alt = ""; t.appendChild(im);
+    var x = el("button", "", "×"); x.title = "ছবি সরান"; x.onclick = function () { S.mPhoto = ""; renderMemberThumb(); };
+    t.appendChild(x); box.appendChild(t);
+  }
+  function openMember(i) {
+    var isNew = i < 0, m = isNew ? { id: "m-" + Date.now(), name: "", title: "", info: "", photo: "", group: "কার্যনির্বাহী কমিটি", featured: false } : S.cm.members[i];
+    S.mEdit = { idx: i, isNew: isNew }; S.mPhoto = m.photo || "";
+    $("mmTitle").textContent = isNew ? "নতুন সদস্য" : "সদস্য এডিট";
+    $("mm_name").value = m.name || ""; $("mm_role").value = m.title || ""; $("mm_info").value = m.info || "";
+    $("mm_group").value = m.group || ""; $("mm_feat").checked = !!m.featured;
+    var dl = $("mm_groups"); dl.textContent = ""; var seen = {};
+    S.cm.members.forEach(function (x) { if (x.group && !seen[x.group]) { seen[x.group] = 1; var o = el("option"); o.value = x.group; dl.appendChild(o); } });
+    $("mm_del").hidden = isNew; renderMemberThumb(); $("mmodal").classList.add("open");
+  }
+  $("mm_cancel").onclick = function () { $("mmodal").classList.remove("open"); };
+  $("mm_file").onchange = function () {
+    var f = this.files && this.files[0]; this.value = ""; if (!f) return;
+    resizeToJpeg(f, 900).then(function (blob) {
+      var path = "images/committee/" + Date.now() + ".jpg";
+      return stageFile(path, blob).then(function () { S.mPhoto = path; renderMemberThumb(); });
+    }).catch(function (e) { toast(e.message || "ছবি যোগ করা যায়নি", true); });
+  };
+  $("mm_save").onclick = function () {
+    var ed = S.mEdit, name = $("mm_name").value.trim();
+    if (!name) return toast("নাম লিখুন", true);
+    var base = ed.isNew ? { id: "m-" + Date.now() } : S.cm.members[ed.idx];
+    var m = Object.assign({}, base, { name: name, title: $("mm_role").value.trim(), info: $("mm_info").value.trim(),
+      group: $("mm_group").value.trim() || "কার্যনির্বাহী কমিটি", featured: $("mm_feat").checked, photo: S.mPhoto });
+    if (ed.isNew) S.cm.members.push(m); else S.cm.members[ed.idx] = m;
+    $("mmodal").classList.remove("open"); cmChanged();
+    toast("পরিবর্তন রাখা হয়েছে। সাইটে পাঠাতে ওপরের \"প্রকাশ করুন\" চাপুন।");
+  };
+  $("mm_del").onclick = function () {
+    if (!confirm("এই সদস্যকে কমিটি থেকে মুছে ফেলবেন?")) return;
+    S.cm.members.splice(S.mEdit.idx, 1); $("mmodal").classList.remove("open"); cmChanged();
+  };
+
+  // ---------- সাইটের তথ্য ও লোগো ----------
   function pillarRow(x) {
     var r = el("div", "prow"), ic = el("input"), tt = el("input"), tx = el("textarea"), del = el("button", "btn danger sm", "মুছুন");
     ic.type = "text"; ic.placeholder = "আইকন"; ic.value = x.icon || ""; ic.className = "pi";
     tt.type = "text"; tt.placeholder = "শিরোনাম"; tt.value = x.title || ""; tt.className = "pt";
     tx.placeholder = "ছোট বর্ণনা"; tx.value = x.text || ""; tx.className = "px";
     var mid = el("div"); mid.appendChild(tt); mid.appendChild(tx);
-    del.onclick = function () { r.remove(); };
+    del.onclick = function () { r.remove(); S.siteDirty = true; updateBar(); };
     r.appendChild(ic); r.appendChild(mid); r.appendChild(del); return r;
   }
   function loadSite() {
@@ -467,132 +571,155 @@
       (S.site.pillars || []).forEach(function (x) { box.appendChild(pillarRow(x)); });
     }).catch(function (e) { toast(e.message || "সাইটের তথ্য আনা যায়নি", true); });
   }
-  $("addPillar").onclick = function () { $("s_pillars").appendChild(pillarRow({})); };
-  $("saveSite").onclick = function () {
-    guard(function () {
-      if (!S.site) { toast("তথ্য এখনো লোড হয়নি", true); return; }
-      var pillars = Array.prototype.slice.call($("s_pillars").children).map(function (r) {
-        return { icon: r.querySelector(".pi").value.trim(), title: r.querySelector(".pt").value.trim(), text: r.querySelector(".px").value.trim() };
-      }).filter(function (x) { return x.title || x.text; });
-      var about = $("s_about").value.split(/\n\s*\n/).map(function (s) { return s.trim(); }).filter(Boolean);
-      var next = Object.assign({}, S.site, { email: $("s_email").value.trim(), facebook: $("s_fb").value.trim(), about: about, pillars: pillars });
-      return putFile("site.json", utf8e(JSON.stringify(next, null, 2) + "\n"), S.siteSha, "এডিটর: সাইটের তথ্য আপডেট").then(function (j) {
-        S.site = next; S.siteSha = j.content.sha; toast("সংরক্ষিত হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে।");
-      });
-    });
-  };
-
-  // ---------- কমিটি ----------
-  S.cm = null; S.cmSha = ""; S.cmDirty = false; S.mEdit = null; S.mPhoto = "";
-  function cmInitial(name) { var m = String(name || "").match(/[ঀ-৿A-Za-z0-9]/); return m ? m[0] : "•"; }
-  function loadCommittee(force) {
-    if (S.cm && !force) { renderCommittee(); return; }
-    getFile("data/committee.json").then(function (f) { S.cm = JSON.parse(f.text); S.cmSha = f.sha; })
-      .catch(function (e) { if (e.status === 404) { S.cm = { term: "", members: [] }; S.cmSha = ""; } else throw e; })
-      .then(function () { S.cm.members = S.cm.members || []; $("c_term").value = S.cm.term || ""; S.cmDirty = false; renderCommittee(); })
-      .catch(function (e) { toast(e.message || "কমিটির তথ্য আনা যায়নি", true); });
+  $("addPillar").onclick = function () { $("s_pillars").appendChild(pillarRow({})); S.siteDirty = true; updateBar(); };
+  $("sitePane").addEventListener("input", function (e) { if (S.site && e.target.type !== "file") { S.siteDirty = true; updateBar(); } });
+  function collectSite() {
+    var pillars = Array.prototype.slice.call($("s_pillars").children).map(function (r) {
+      return { icon: r.querySelector(".pi").value.trim(), title: r.querySelector(".pt").value.trim(), text: r.querySelector(".px").value.trim() };
+    }).filter(function (x) { return x.title || x.text; });
+    var about = $("s_about").value.split(/\n\s*\n/).map(function (s) { return s.trim(); }).filter(Boolean);
+    return Object.assign({}, S.site, { email: $("s_email").value.trim(), facebook: $("s_fb").value.trim(), about: about, pillars: pillars });
   }
-  function saveCommittee(msg) {
-    S.cm.term = $("c_term").value.trim();
-    return putFile("data/committee.json", utf8e(JSON.stringify(S.cm, null, 2) + "\n"), S.cmSha || null, msg).then(function (j) {
-      S.cmSha = j.content.sha; S.cmDirty = false; renderCommittee();
-    });
-  }
-  function renderCommittee() {
-    var box = $("cList"); box.textContent = ""; $("c_save").hidden = !S.cmDirty;
-    var ms = S.cm.members;
-    if (!ms.length) { box.appendChild(el("p", "muted", "এখনো কোনো সদস্য নেই। \"+ নতুন সদস্য\" চাপুন।")); return; }
-    ms.forEach(function (m, i) {
-      var r = el("div", "row");
-      var ph;
-      if (m.photo) { ph = el("img"); ph.src = thumbSrc(m.photo); ph.alt = ""; ph.onerror = function () { ph.style.display = "none"; }; }
-      else { ph = el("div", "", cmInitial(m.name)); }
-      ph.style.cssText = "width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:center top;background:var(--soft);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--green);flex:none";
-      r.appendChild(ph);
-      var t = el("div", "t"); t.appendChild(el("b", "", m.name || ""));
-      var s = el("span", "muted", (m.title || "") + " "); s.appendChild(el("span", "chip", m.group || "")); if (m.featured) { s.appendChild(document.createTextNode(" ")); s.appendChild(el("span", "chip", "বড় কার্ড")); }
-      t.appendChild(s); r.appendChild(t);
-      var up = el("button", "btn sec sm", "▲"), dn = el("button", "btn sec sm", "▼"), ed = el("button", "btn sm", "এডিট");
-      up.disabled = i === 0; dn.disabled = i === ms.length - 1;
-      up.onclick = function () { var x = ms[i]; ms[i] = ms[i - 1]; ms[i - 1] = x; S.cmDirty = true; renderCommittee(); };
-      dn.onclick = function () { var x = ms[i]; ms[i] = ms[i + 1]; ms[i + 1] = x; S.cmDirty = true; renderCommittee(); };
-      ed.onclick = function () { openMember(i); };
-      r.appendChild(up); r.appendChild(dn); r.appendChild(ed); box.appendChild(r);
-    });
-  }
-  $("c_term").addEventListener("input", function () { S.cmDirty = true; $("c_save").hidden = false; });
-  $("c_save").onclick = function () {
-    guard(function () { return saveCommittee("এডিটর: কমিটির ক্রম/মেয়াদ").then(function () { toast("সংরক্ষিত হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে।"); }); });
-  };
-  $("c_new").onclick = function () { if (!S.cm) return toast("একটু অপেক্ষা করুন, তথ্য লোড হচ্ছে", true); openMember(-1); };
-
-  function renderMemberThumb() {
-    var box = $("mm_thumb"); box.textContent = "";
-    if (!S.mPhoto) return;
-    var t = el("div", "thumb"), im = el("img"); im.src = thumbSrc(S.mPhoto); im.alt = ""; t.appendChild(im);
-    var x = el("button", "", "×"); x.title = "ছবি সরান"; x.onclick = function () { S.mPhoto = ""; renderMemberThumb(); };
-    t.appendChild(x); box.appendChild(t);
-  }
-  function openMember(i) {
-    var isNew = i < 0, m = isNew ? { id: "m-" + Date.now(), name: "", title: "", info: "", photo: "", group: "কার্যনির্বাহী কমিটি", featured: false } : S.cm.members[i];
-    S.mEdit = { idx: i, isNew: isNew }; S.mPhoto = m.photo || "";
-    $("mmTitle").textContent = isNew ? "নতুন সদস্য" : "সদস্য এডিট";
-    $("mm_name").value = m.name || ""; $("mm_role").value = m.title || ""; $("mm_info").value = m.info || "";
-    $("mm_group").value = m.group || ""; $("mm_feat").checked = !!m.featured;
-    var dl = $("mm_groups"); dl.textContent = "";
-    var seen = {}; S.cm.members.forEach(function (x) { if (x.group && !seen[x.group]) { seen[x.group] = 1; var o = el("option"); o.value = x.group; dl.appendChild(o); } });
-    $("mm_del").hidden = isNew; renderMemberThumb(); $("mmodal").classList.add("open");
-  }
-  $("mm_cancel").onclick = function () { $("mmodal").classList.remove("open"); };
-  $("mm_file").onchange = function () {
-    var f = this.files && this.files[0]; this.value = ""; if (!f) return;
-    toast("ছবি আপলোড হচ্ছে...");
-    resizeToJpeg(f, 900).then(function (blob) {
-      var path = "images/committee/" + Date.now() + ".jpg";
-      return blobB64(blob).then(function (b) { return putFile(path, b, null, "এডিটর: সদস্যের ছবি"); }).then(function () {
-        S.previews[path] = URL.createObjectURL(blob); S.mPhoto = path; renderMemberThumb(); toast("ছবি যোগ হয়েছে। এখন সদস্য সংরক্ষণ করুন।");
-      });
-    }).catch(function (e) { toast(e.message || "ছবি আপলোড ব্যর্থ", true); });
-  };
-  $("mm_save").onclick = function () {
-    guard(function () {
-      var ed = S.mEdit, name = $("mm_name").value.trim();
-      if (!name) { toast("নাম লিখুন", true); return; }
-      var backup = S.cm.members.slice();
-      var base = ed.isNew ? { id: "m-" + Date.now() } : S.cm.members[ed.idx];
-      var m = Object.assign({}, base, { name: name, title: $("mm_role").value.trim(), info: $("mm_info").value.trim(),
-        group: $("mm_group").value.trim() || "কার্যনির্বাহী কমিটি", featured: $("mm_feat").checked, photo: S.mPhoto });
-      if (ed.isNew) S.cm.members.push(m); else S.cm.members[ed.idx] = m;
-      return saveCommittee("এডিটর: কমিটির সদস্য " + (ed.isNew ? "যোগ" : "আপডেট")).then(function () {
-        $("mmodal").classList.remove("open"); toast("সংরক্ষিত হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে।");
-      }).catch(function (e) { S.cm.members = backup; throw e; });
-    });
-  };
-  $("mm_del").onclick = function () {
-    guard(function () {
-      var ed = S.mEdit; if (!confirm("এই সদস্যকে কমিটি থেকে মুছে ফেলবেন?")) return;
-      var backup = S.cm.members.slice(); S.cm.members.splice(ed.idx, 1);
-      return saveCommittee("এডিটর: কমিটির সদস্য মোছা").then(function () {
-        $("mmodal").classList.remove("open"); toast("মুছে ফেলা হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে।");
-      }).catch(function (e) { S.cm.members = backup; throw e; });
-    });
-  };
-
-  // ---------- লোগো বদলানো ----------
-  ["lg1", "lg2", "lg3"].forEach(function (id) {
+  ["lg1", "lg2", "lg3"].forEach(function (id, n) {
     $(id).onchange = function () {
       var inp = this, f = inp.files && inp.files[0], path = inp.getAttribute("data-path"); inp.value = ""; if (!f) return;
       if (f.type !== "image/png") return toast("শুধু PNG ফাইল দিন", true);
       if (f.size > 3 * 1024 * 1024) return toast("ফাইলটি ৩ MB-এর বেশি বড়", true);
-      guard(function () {
-        toast("লোগো আপলোড হচ্ছে...");
-        return gh("GET", "/contents/" + path).then(function (r) { return r.json(); }).then(function (j) { return j.sha; })
-          .catch(function (e) { if (e.status === 404) return null; throw e; })
-          .then(function (sha) { return blobB64(f).then(function (b) { return putFile(path, b, sha, "এডিটর: লোগো আপডেট"); }); })
-          .then(function () { toast("লোগো বদলানো হয়েছে। সাইটে আসতে ১–২ মিনিট লাগবে (ব্রাউজার রিফ্রেশ করুন)।"); });
-      });
+      stageFile(path, f).then(function () { $(id + "s").textContent = "✔ " + f.name + " বাছা হয়েছে, প্রকাশ করলে বদলাবে"; updateBar(); })
+        .catch(function () { toast("ফাইলটি পড়া যায়নি", true); });
     };
   });
+
+  // ---------- প্রকাশ ----------
+  function setStatus(msg, err) {
+    var s = $("runStatus"); s.hidden = !msg; s.textContent = msg || ""; s.className = "status" + (err ? " err" : "");
+  }
+  function applyOps(arr) {
+    Object.keys(S.postOps).forEach(function (id) {
+      var op = S.postOps[id]; if (op.remove) removeLocal(arr, id); else upsertLocal(arr, op.post);
+    });
+  }
+  function buildEntries(head) {
+    var entries = [], referenced = {}, chain = Promise.resolve();
+    LOGOS.forEach(function (p) { referenced[p] = 1; });
+    if (Object.keys(S.postOps).length) {
+      chain = chain.then(function () { return getFile("data/posts.json", head); }).then(function (f) {
+        var latest = JSON.parse(f.text); applyOps(latest);
+        Object.keys(S.postOps).forEach(function (id) { var op = S.postOps[id]; if (op.post) (op.post.images || []).forEach(function (u) { referenced[u] = 1; }); });
+        entries.push({ path: "data/posts.json", text: JSON.stringify(latest, null, 2) });
+      });
+    }
+    if (S.cmDirty) {
+      chain = chain.then(function () { return getFile("data/committee.json", head).catch(function (e) { if (e.status === 404) return { sha: "" }; throw e; }); })
+        .then(function (f) {
+          if (f.sha !== S.cmSha) { var e = new Error("কমিটির তথ্য অন্য কোথাও বদলেছে। \"রিফ্রেশ\" চেপে নতুন তথ্য এনে আবার চেষ্টা করুন।"); e.fatal = true; throw e; }
+          S.cm.term = $("c_term").value.trim();
+          S.cm.members.forEach(function (m) { if (m.photo) referenced[m.photo] = 1; });
+          entries.push({ path: "data/committee.json", text: JSON.stringify(S.cm, null, 2) + "\n" });
+        });
+    }
+    if (S.siteDirty) {
+      chain = chain.then(function () { return getFile("site.json", head); }).then(function (f) {
+        if (f.sha !== S.siteSha) { var e = new Error("সাইটের তথ্য অন্য কোথাও বদলেছে। \"রিফ্রেশ\" চেপে নতুন তথ্য এনে আবার চেষ্টা করুন।"); e.fatal = true; throw e; }
+        entries.push({ path: "site.json", text: JSON.stringify(collectSite(), null, 2) + "\n" });
+      });
+    }
+    return chain.then(function () {
+      Object.keys(S.files).forEach(function (p) { if (referenced[p]) entries.push({ path: p, b64: S.files[p].b64 }); });
+      return entries;
+    });
+  }
+  function commitEntries(head, treeSha, entries, message) {
+    return Promise.all(entries.map(function (e) {
+      return gh("POST", "/git/blobs", e.b64 ? { content: e.b64, encoding: "base64" } : { content: e.text, encoding: "utf-8" })
+        .then(function (r) { return r.json(); }).then(function (b) { return { path: e.path, mode: "100644", type: "blob", sha: b.sha }; });
+    })).then(function (tree) { return gh("POST", "/git/trees", { base_tree: treeSha, tree: tree }); })
+      .then(function (r) { return r.json(); })
+      .then(function (t) { return gh("POST", "/git/commits", { message: message, tree: t.sha, parents: [head] }); })
+      .then(function (r) { return r.json(); })
+      .then(function (c) {
+        return gh("PATCH", "/git/refs/heads/" + S.branch, { sha: c.sha }).catch(function (e) { e.stage = "ref"; throw e; });
+      });
+  }
+  function publishOnce() {
+    return gh("GET", "/git/ref/heads/" + S.branch).then(function (r) { return r.json(); }).then(function (ref) {
+      var head = ref.object.sha;
+      return gh("GET", "/git/commits/" + head).then(function (r) { return r.json(); }).then(function (c) {
+        return buildEntries(head).then(function (entries) {
+          if (!entries.length) throw Object.assign(new Error("প্রকাশ করার মতো কিছু নেই"), { fatal: true });
+          var pc = Object.keys(S.postOps).length, parts = [];
+          if (pc) parts.push("পোস্ট " + pc + "টি"); if (S.cmDirty) parts.push("কমিটি"); if (S.siteDirty) parts.push("সাইটের তথ্য");
+          if (logoCount()) parts.push("লোগো");
+          return commitEntries(head, c.tree.sha, entries, "এডিটর: প্রকাশ (" + (parts.join(", ") || "ছবি") + ")");
+        });
+      });
+    });
+  }
+  function publishWithRetry(tries) {
+    return publishOnce().catch(function (e) {
+      if (!e.fatal && e.stage === "ref" && tries > 1) return publishWithRetry(tries - 1);
+      throw e;
+    });
+  }
+  $("publishBtn").onclick = function () {
+    if (S.busy || !pendingCount()) return;
+    if (S.cmDirty && S.cm) S.cm.term = $("c_term").value.trim();
+    S.busy = true; $("publishBtn").disabled = true; $("publishBtn").textContent = "প্রকাশ হচ্ছে...";
+    var since = Date.now();
+    publishWithRetry(3).then(function () {
+      toast("প্রকাশ হয়েছে! সাইটে আসতে ১–২ মিনিট লাগবে।");
+      return loadAll().then(function () { watchRun(since); });
+    }).catch(function (e) { toast(e.message || "প্রকাশ ব্যর্থ। আপনার পরিবর্তন সংরক্ষিত আছে, আবার চেষ্টা করুন।", true); })
+      .then(function () { S.busy = false; $("publishBtn").textContent = "🚀 প্রকাশ করুন"; updateBar(); });
+  };
+  $("discardBtn").onclick = function () {
+    if (!confirm("সব অপ্রকাশিত পরিবর্তন বাদ দিয়ে সর্বশেষ প্রকাশিত অবস্থায় ফিরবেন?")) return;
+    loadAll().then(function () { toast("পরিবর্তন বাদ দেওয়া হয়েছে"); }).catch(function (e) { toast(e.message, true); });
+  };
+  $("reloadBtn").onclick = function () {
+    if (pendingCount() && !confirm("রিফ্রেশ করলে অপ্রকাশিত পরিবর্তন মুছে যাবে। আগে প্রকাশ করতে চান কি? এগিয়ে গেলে পরিবর্তন বাদ যাবে।")) return;
+    loadAll().then(function () { toast("সর্বশেষ তথ্য আনা হয়েছে"); }).catch(function (e) { toast(e.message, true); });
+  };
+
+  // ---------- ফেসবুক সিঙ্ক (এখনই চালু করা) ----------
+  $("syncBtn").onclick = function () {
+    if (S.busy) return;
+    S.busy = true; $("syncBtn").disabled = true; var since = Date.now();
+    gh("POST", "/actions/workflows/" + WORKFLOW + "/dispatches", { ref: S.branch }).then(function () {
+      toast("ফেসবুক সিঙ্ক শুরু হয়েছে। নতুন পোস্ট নিজে থেকেই সাইটে চলে যাবে, \"প্রকাশ করুন\" লাগবে না।");
+      watchRun(since, true);
+    }).catch(function (e) {
+      toast(e.status === 403 || e.status === 404 ? "সিঙ্ক চালু করা যায়নি। টোকেনে Actions → Read and write অনুমতি দিন।" : (e.message || "সিঙ্ক ব্যর্থ"), true);
+    }).then(function () { S.busy = false; $("syncBtn").disabled = false; updateBar(); });
+  };
+
+  // ---------- প্রকাশের অবস্থা দেখানো ----------
+  function watchRun(since, isSync) {
+    var id = ++S.watchId, started = Date.now(), phase = "build", buildDone = 0, depStart = 0;
+    setStatus("⏳ সাইট তৈরি হচ্ছে...");
+    function next() { setTimeout(tick, 7000); }
+    function tick() {
+      if (id !== S.watchId) return;
+      if (Date.now() - started > 8 * 60 * 1000) { setStatus(""); return; }
+      gh("GET", "/actions/runs?per_page=10&branch=" + encodeURIComponent(S.branch)).then(function (r) { return r.json(); }).then(function (j) {
+        var runs = j.workflow_runs || [];
+        if (phase === "build") {
+          var run = runs.filter(function (r) { return r.name === WORKFLOW_NAME && new Date(r.created_at).getTime() >= since - 30000; })[0];
+          if (!run) { if (Date.now() - started > 90000) { setStatus(""); return; } return next(); }
+          if (run.status !== "completed") return next();
+          if (run.conclusion !== "success") { setStatus("❌ সাইট তৈরিতে সমস্যা হয়েছে। GitHub-এর Actions ট্যাব দেখুন।", true); return; }
+          phase = "deploy"; buildDone = new Date(run.updated_at).getTime(); depStart = Date.now();
+          setStatus("⏳ সাইট লাইভ হচ্ছে..."); if (isSync) loadAll().catch(function () {}); return next();
+        }
+        var dep = runs.filter(function (r) { return /pages build/i.test(r.name || "") && new Date(r.created_at).getTime() >= buildDone - 60000; })[0];
+        if (!dep) { if (Date.now() - depStart > 45000) { setStatus("✅ সম্পন্ন হয়েছে"); return; } return next(); }
+        if (dep.status !== "completed") return next();
+        if (dep.conclusion === "success") setStatus("✅ সাইট লাইভ হয়েছে");
+        else setStatus("❌ সাইট লাইভ করতে সমস্যা। GitHub-এর Actions ট্যাব দেখুন।", true);
+      }).catch(function () { setStatus(""); });
+    }
+    tick();
+  }
 
   showLogin();
 })();
