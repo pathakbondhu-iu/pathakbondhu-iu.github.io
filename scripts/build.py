@@ -262,7 +262,7 @@ class Site:
         if image:
             absu = image if image.startswith("http") else (self.url + image)
             og_img = '<meta property="og:image" content="{}">'.format(esc(absu))
-        items = [("home", "/", "হোম"), ("about", "/about/", "আমাদের কথা"), ("committee", "/committee/", "কমিটি"),
+        items = [("home", "/", "হোম"), ("about", "/about/", "আমাদের সম্পর্কে"), ("committee", "/committee/", "কমিটি"),
                  ("posts", "/posts/", "সব পোস্ট"), ("cats", "/category/", "ক্যাটাগরি"), ("contact", "/contact/", "যোগাযোগ")]
         menu = "".join('<a href="{}"{}>{}</a>'.format(h, ' class="on"' if k == active else "", t) for k, h, t in items)
         mail = "mailto:" + self.email
@@ -447,7 +447,7 @@ class Site:
   <a class="cta" href="#recent">সাম্প্রতিক পোস্ট দেখুন</a>
 </header>
 <div class="wrap">
-  <section class="block"><div class="sec-head"><h2>আমাদের কথা</h2><div class="bar"></div></div>
+  <section class="block"><div class="sec-head"><h2>আমাদের সম্পর্কে</h2><div class="bar"></div></div>
     <div class="about-text">{about}</div>{pillars}
     <a class="more-link" href="/about/">আরও জানুন →</a></section>
   {committee}
@@ -466,12 +466,12 @@ class Site:
         write("index.html", self.layout(self.full_name, desc, body, "home", "/", image="/images/pathakbondhu-logo.png",
                                         scripts=CAROUSEL_JS))
 
-        # আমাদের কথা
+        # আমাদের সম্পর্কে
         about_html = "".join("<p>{}</p>".format(esc(t)) for t in self.about)
-        body = self.head("আমাদের কথা", esc(self.full_name)) + '<div class="wrap"><section class="block">' \
+        body = self.head("আমাদের সম্পর্কে", esc(self.full_name)) + '<div class="wrap"><section class="block">' \
             '<div class="about-text">{}</div>{}</section><section class="block">{}</section></div>'.format(
                 about_html, self.pillars_html(), self.contact_box())
-        write("about/index.html", self.layout("আমাদের কথা", desc, body, "about", "/about/"))
+        write("about/index.html", self.layout("আমাদের সম্পর্কে", desc, body, "about", "/about/"))
 
         # যোগাযোগ
         body = self.head("যোগাযোগ") + '<div class="wrap"><section class="block">{}</section></div>'.format(self.contact_box())
