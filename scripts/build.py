@@ -85,8 +85,8 @@ CSS = r"""
 :root{--deep:#083a2c;--green:#0f5c45;--mid:#1d7a5c;--soft:#e6f0ea;--gold:#c99a2e;--gold-l:#f1d98e;--paper:#faf7f0;--card:#fff;--ink:#1b2a24;--muted:#63726b;--line:#e4e0d4;--shadow:0 8px 28px rgba(8,58,44,.10)}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:96px}
-body{margin:0;font-family:"Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.8}
-h1,h2,h3,.serif{font-family:"Tiro Bangla","Hind Siliguri",serif;font-weight:400}
+body{margin:0;font-family:"Noto Sans Bengali",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.8}
+h1,h2,h3,.serif{font-family:"Noto Sans Bengali",system-ui,sans-serif;font-weight:600}
 a{color:inherit}img{max-width:100%}
 .wrap{max-width:1040px;margin:0 auto;padding:0 18px}.narrow{max-width:760px}
 section.block{padding:46px 0 10px}
@@ -107,7 +107,7 @@ section.block{padding:46px 0 10px}
 .hero>*{position:relative}
 .hero .logo{height:118px;width:auto;display:block;margin:0 auto 12px;filter:drop-shadow(0 6px 14px rgba(0,0,0,.3))}
 .hero h1{margin:0;font-size:3rem;letter-spacing:.5px;line-height:1.3}
-.hero .branch{margin:2px 0 0;font-size:1.3rem;color:var(--gold-l);font-family:"Tiro Bangla",serif}
+.hero .branch{margin:2px 0 0;font-size:1.3rem;color:var(--gold-l);font-family:"Noto Sans Bengali",sans-serif;font-weight:600}
 .hero .tag{margin:12px auto 0;max-width:560px;opacity:.93}
 .partners{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:22px}
 .partner{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);border-radius:16px;padding:8px 16px 8px 10px;font-size:.88rem;line-height:1.4;text-align:left}
@@ -145,7 +145,7 @@ section.block{padding:46px 0 10px}
 .catcard::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--c,var(--green))}
 .catcard:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--c,var(--green))}
 .catcard .ico{width:58px;height:58px;margin:0 auto 8px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;background:color-mix(in srgb,var(--c,var(--green)) 14%,white)}
-.catcard .nm{font-size:1.15rem;color:var(--deep);font-family:"Tiro Bangla",serif}.catcard .ct{font-size:.82rem;color:var(--muted)}
+.catcard .nm{font-size:1.15rem;color:var(--deep);font-family:"Noto Sans Bengali",sans-serif;font-weight:600}.catcard .ct{font-size:.82rem;color:var(--muted)}
 .catcard.all{--c:var(--deep)}
 .pills{display:flex;gap:8px;overflow-x:auto;padding:18px 0 14px;scrollbar-width:none}.pills::-webkit-scrollbar{display:none}
 .pills a{flex:0 0 auto;text-decoration:none;border:1px solid var(--line);background:#fff;padding:5px 16px;border-radius:20px;font-size:.92rem}
@@ -168,7 +168,7 @@ footer .flogos img{height:46px;width:auto;background:#fff;border-radius:10px;pad
 .featured{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;max-width:760px;margin:0 auto}
 .mem{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 14px;text-align:center;box-shadow:var(--shadow)}
 .mem .mphoto,.mem .avatar{width:96px;height:96px;border-radius:50%;object-fit:cover;object-position:center top;display:block;margin:0 auto 10px;border:3px solid var(--gold-l)}
-.avatar{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--soft),#fff3d6);color:var(--green);font-size:2.2rem;font-family:"Tiro Bangla",serif}
+.avatar{display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--soft),#fff3d6);color:var(--green);font-size:2.2rem;font-family:"Noto Sans Bengali",sans-serif;font-weight:600}
 .mem h3{margin:2px 0 0;font-size:1.15rem;color:var(--deep);line-height:1.5}
 .mem .role{display:inline-block;margin-top:4px;background:var(--soft);color:var(--green);font-weight:600;font-size:.84rem;padding:0 12px;border-radius:12px}
 .mem .info{margin:6px 0 0;color:var(--muted);font-size:.86rem;line-height:1.6}
@@ -283,7 +283,7 @@ class Site:
 <link rel="icon" href="/images/pathakbondhu-logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Tiro+Bangla:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css?v={ver}">
 </head>
 <body>
